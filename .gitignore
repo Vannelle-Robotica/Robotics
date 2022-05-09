@@ -1,0 +1,7 @@
+# Exclude local directories
+/.idea
+/venv
+
+# Exclude dataset images 
+/positive*
+/negative*
