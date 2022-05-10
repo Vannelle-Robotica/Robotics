@@ -19,12 +19,16 @@ And possible in the future:
 
 On [Arch](https://archlinux.org/)-based linux distributions the project can be set up by running
 the [installation script](install%20deps.sh). <br>
-On other distributions, you will have to install the following dependencies:
+On other distributions, you will have to manually install the following dependencies:
 
+- [Bluez](https://archlinux.org/packages/extra/x86_64/bluez/)
 - [Bluez-utils](https://archlinux.org/packages/extra/x86_64/bluez-utils/)
-- [python-opencv](https://archlinux.org/packages/extra/x86_64/python-opencv/) (or
-  with [pip](https://pypi.org/project/opencv-python/))
-- [pybluez](git+https://github.com/pybluez/pybluez) (with pip)
+- [pip](https://archlinux.org/packages/extra/any/python-pip/)
+
+And with pip:
+
+- [python-opencv](https://pypi.org/project/opencv-python/)
+- [pybluez](git+https://github.com/pybluez/pybluez)
 
 ### Windows
 

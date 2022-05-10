@@ -7,19 +7,17 @@ if not os.path.exists('positive'):
     print('Positive images not found')
     exit(-1)
 
-# Open file stream to info.dat
-info = open('info.dat', 'w')
+# Open file stream to positive.dat
+output = open('positive.dat', 'w')
 index = 0
 
 # Process all jpgs in positive directory
-# TODO: Fix loop occasionally duplicating & replacing images
 for file in os.listdir('positive'):
     if not file.endswith('.jpg'):
         continue
 
-    # Read image from file
+    # Read image from positive directory
     img = imread(f'positive/{file}')
-    os.remove(f'positive/{file}')
 
     # Convert to hsv and mask frame
     converted = cvtColor(img, COLOR_BGR2HSV)
@@ -32,11 +30,17 @@ for file in os.listdir('positive'):
     if len(contours) == 0:
         continue
 
-    # Filter contours, get position of largest contour and delete existing image
+    # Sort contours by size and get position of the largest contour
     contours = sorted(contours, key=contourArea, reverse=True)
     x, y, width, height = boundingRect(contours[0])
 
     # Write result to files
-    info.write(f'positive/{index}.jpg  {index}  {x} {y} {width} {height}\n')
-    imwrite(f'positive/{index}.jpg', img)
+    output.write(f'positive/{file}  {index}  {x} {y} {width} {height}\n')
     index += 1
+
+    # Draw contours and show image
+    drawContours(img, contours, 0, (255, 255, 255), 3)
+    imshow('Extracted', img)
+    waitKey(-1)
+
+output.close()

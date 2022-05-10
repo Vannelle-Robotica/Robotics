@@ -2,6 +2,6 @@
 /.idea
 /venv
 
-# Exclude dataset images 
+# Exclude classifier training files 
 /positive*
 /negative*
