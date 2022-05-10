@@ -1,14 +1,14 @@
 import uuid
 
-from bluetooth import *
+import bluetooth as bt
 
 uuid = uuid.uuid1().__str__()
 
 
 def __main__():
     # Host bluetooth server
-    server = BluetoothSocket(L2CAP)
-    server.bind(('', PORT_ANY))
+    server = bt.BluetoothSocket(bt.L2CAP)
+    server.bind(('', bt.PORT_ANY))
     server.listen(1)
 
     # Accept connection
@@ -21,15 +21,15 @@ def get_client(server):
     :arg server bound and listening SocketServer
     """
     # Advertise to other devices
-    advertise_service(server, "Bob", uuid,
-                      [uuid, SERIAL_PORT_CLASS],
-                      [SERIAL_PORT_PROFILE], description='Robotics Raspberry pi')
+    bt.advertise_service(server, "Bob", uuid,
+                      [uuid, bt.SERIAL_PORT_CLASS],
+                      [bt.SERIAL_PORT_PROFILE], description='Robotics Raspberry pi')
     print(f'Awaiting connection on {server.getsockname()[1]}')
 
     # Accept first client
     client, address = server.accept()
     print(f'Accepted client from {address} {client}')
-    stop_advertising(server)
+    bt.stop_advertising(server)
 
     # Close connections
     server.close()
