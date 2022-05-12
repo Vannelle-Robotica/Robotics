@@ -1,10 +1,11 @@
 import os
+
 import cv2 as cv
 
 # Exit if no positive images are given
 if not os.path.exists('positive'):
     print('Positive images not found')
-    exit(-1)
+    exit(1)
 
 # Open file stream to positive.dat
 output = open('positive.dat', 'w')
@@ -36,10 +37,5 @@ for file in os.listdir('positive'):
     # Write result to files
     output.write(f'positive/{file}  {index}  {x} {y} {width} {height}\n')
     index += 1
-
-    # Draw contours and show image
-    cv.drawContours(img, contours, 0, (0, 0, 0), 3)
-    cv.imshow('Extracted', img)
-    cv.waitKey(-1)
 
 output.close()
