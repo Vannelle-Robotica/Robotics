@@ -2,10 +2,10 @@
 
 # Update system and install required packages
 sudo pacman -Syu
-sudo pacman --needed -S gcc bluez bluez-utils python-pip
+sudo pacman --needed -S bluez bluez-utils python-pip
 
-# Install OpenCV and PyBluez from github because of a few crucial fixes
-pip install opencv-python git+https://github.com/pybluez/pybluez
+# Install OpenCV and BluePy using pip
+pip install opencv-python bluepy
 
 # Move bluetooth service override to override directory
 sudo mkdir -p /etc/systemd/system/bluetooth.service.d/

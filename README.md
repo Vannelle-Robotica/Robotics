@@ -28,11 +28,11 @@ On other distributions, you will have to manually install the following dependen
 And with pip:
 
 - [python-opencv](https://pypi.org/project/opencv-python/)
-- [pybluez](git+https://github.com/pybluez/pybluez)
+- [bluepy](https://pypi.org/project/bluepy/)
 
 ### Windows
 
-Bluez is not supported on Windows, meaning you won't be able to use the controller. <br>
-The remaining parts of this project require the following dependencies:
+Bluez is not supported on Windows, meaning you might encounter issues when trying to use the controller. <br>
 
 - [python-opencv](https://pypi.org/project/opencv-python/)
+- [bluepy](https://pypi.org/project/bluepy/)
