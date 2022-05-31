@@ -4,7 +4,7 @@ import cv2 as cv
 
 # Exit if no positive images are given
 if not os.path.exists('positive'):
-    print('Positive images not found')
+    print('positive images not found')
     exit(1)
 
 # Open file stream to positive.dat
@@ -13,7 +13,7 @@ index = 0
 
 # Process all jpgs in positive directory
 for file in os.listdir('positive'):
-    if not file.endswith('.jpg'):
+    if not file.endswith('.png'):
         continue
 
     # Read image from positive directory
