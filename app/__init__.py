@@ -1,11 +1,7 @@
-import time
-
 import RPi.GPIO as GPIO
 
-from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from utils.ble import BLEClient
-from utils.telemetry import get_temperature
 
 
 class Application:
@@ -15,9 +11,9 @@ class Application:
         print('Initializing LoadCells')
         self.loadCells = LoadCells()
 
-        # Initialize Arduino connection
-        print('Initializing Arduino connection')
-        self.arduino = Arduino('0x8')
+        # Initialize Servos
+        print('Initializing Servos')
+        # TODO
 
         # Attempt to connect to controller
         print('Waiting for controller')
@@ -25,8 +21,7 @@ class Application:
         print('Connected')
 
     def update(self):
-        print(f'Temperature: {get_temperature()}')
-        time.sleep(.5)
+        print('Application go brrr')
 
     def is_connected(self):
         return self.ble.is_connected()

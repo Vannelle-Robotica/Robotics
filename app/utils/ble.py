@@ -39,20 +39,18 @@ class BLEClient:
 
     def __del__(self):
         # Disconnect from server
-        if 'per' in locals():
-            self.per.disconnect()
+        self.per.disconnect()
 
     def _run(self):
-        """Handles the main update loop"""
         if self.running:
             return
         self.running = True
 
-        # Initialize characteristics
+        # Write to characteristics
         self.per.writeCharacteristic(self.ch.valHandle + 1, b"\x01\00")
 
         # BLE loop
-        while self.is_connected():
+        while True:
             # Wait for notification from ESP32
             self.per.waitForNotifications(1.0)
 
@@ -60,7 +58,6 @@ class BLEClient:
                 self.rqs_to_send = False
 
                 try:
-                    # Write pending data to target device
                     self.ch.write(self.bytes_to_send, True)
                 except btle.BTLEException:
                     print('btle.BTLEException')
@@ -75,5 +72,4 @@ class BLEClient:
         self.rqs_to_send = True
 
     def is_connected(self):
-        """Checks if the client is still connected to the server"""
-        return self.per.getState() == 'conn'
+        return self.per.getState()

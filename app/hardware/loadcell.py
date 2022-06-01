@@ -3,11 +3,9 @@ from hx711 import HX711
 
 
 class LoadCells:
-	"""Class used for managing the LoadCells used on the robot"""
 
 	def __init__(self):
 		# Set pinmode to BCM
-		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 
 		# Initialize LoadCells
@@ -15,14 +13,13 @@ class LoadCells:
 		self.rightCell = LoadCell(-378.3, 20, 21)
 
 	def get_combined_weight(self):
-		"""Gets the combined weight of the left and right loadcells"""
 		return self.leftCell.get_weight() + self.rightCell.get_weight()
 
 
 class LoadCell:
 
-	def __init__(self, ratio, data_pin, clock_pin):
-		self.hx = HX711(dout_pin=data_pin, pd_sck_pin=clock_pin)
+	def __init__(self, ratio, dout, pd):
+		self.hx = HX711(dout_pin=dout, pd_sck_pin=pd)
 		self.hx.set_scale_ratio(ratio)
 		self.hx.zero()
 
