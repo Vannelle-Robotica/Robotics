@@ -42,6 +42,7 @@ class BLEClient:
         self.per.disconnect()
 
     def _run(self):
+        """Handles the main update loop"""
         if self.running:
             return
         self.running = True
@@ -72,4 +73,5 @@ class BLEClient:
         self.rqs_to_send = True
 
     def is_connected(self):
-        return self.per.getState()
+        """Checks if the client is still connected to the server"""
+        return self.per.getState() == 'conn'
