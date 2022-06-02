@@ -1,6 +1,15 @@
 from smbus import SMBus
 
 
+def to_int_list(msg):
+    """Converts the specified msg to a list of integers representing the ASCII chars"""
+    ints = []
+
+    for i in range(len(msg)):
+        ints.append(ord(msg[i]))
+    return ints
+
+
 class Arduino:
     """Arduino class used for sending bytes through an I2C serial connection"""
 
@@ -11,8 +20,7 @@ class Arduino:
     def __del__(self):
         self.bus.close()
 
-    def write(self, data):
-        """Writes the specified bytes to the target Arduino"""
-        # TODO: Use write_block / write_word
-        for byte in data:
-            self.bus.write_byte(self.address, byte)
+    def write(self, msg):
+        """Writes the specified msg to the target Arduino"""
+        data = to_int_list(msg)
+        self.bus.write_i2c_block_data(self.address, 0, data)
