@@ -7,6 +7,7 @@ class LoadCells:
 
 	def __init__(self):
 		# Set pinmode to BCM
+		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
 
 		# Initialize LoadCells

@@ -9,12 +9,12 @@ def upload(data):
 
 def get_temperature():
     # Read temperature from thermal zone 0
-    file = open('/sys/class/thermal/thermal_zone1/temp')
+    file = open('/sys/class/thermal/thermal_zone0/temp')
     contents = file.readline()
 
     # Close file and return
     file.close()
-    return float(contents) / 100
+    return float(contents) / 1000
 
 # TODO: Add more data and use actual values from sensors
 # data = {
