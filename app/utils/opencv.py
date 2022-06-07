@@ -1,9 +1,11 @@
+import math
+
 import cv2 as cv
 
 # Initialize video capture and image classifier
 capture = cv.VideoCapture(0)
 index = 0
-# classifier = CascadeClassifier('cascades/haarcascade_frontalface_alt.xml')
+factor = 0
 
 while capture.isOpened():
     # Capture image
@@ -15,31 +17,27 @@ while capture.isOpened():
         capture.release()
         exit()
 
-    # Greyscale image and detect objects
-    # greyscale = cvtColor(frame, COLOR_RGB2GRAY)
-    # detected = classifier.detectMultiScale(greyscale)
-    # lines = Canny(frame, threshold1=50, threshold2=150)
-
-    # Draw rectangles around detected components
-    # for (x, y, width, height) in detected:
-    #     rectangle(frame, (x, y), (x + width, y + height), (255, 255, 255), 3)
-    #     putText(frame, 'Mens', (int(x + width / 4), y - 20), FONT_ITALIC, 4, (0, 0, 255), 1)
-
-    converted = cv.cvtColor(frame,cv.COLOR_BGR2RGB)
-    mask = cv.inRange(converted, (227,171,120), (122,77,42))
+    converted = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    mask = cv.inRange(converted, (10, 75, 0), (20, 255, 255))
     filtered = cv.bitwise_and(frame, frame, mask=mask)
-
     filtered = cv.cvtColor(filtered, cv.COLOR_RGB2GRAY)
     contours, _ = cv.findContours(filtered, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
     if len(contours) > 0:
         contours = sorted(contours, key=cv.contourArea, reverse=True)
-        # drawContours(frame, contours, 0, (255, 0, 0), 3)
+        contour = contours[0]
+        area = cv.contourArea(contour)
+        perimeter = cv.arcLength(contour, True)
+
+        # calculates how round a object is
+        if area > 5:
+            factor = 4 * math.pi * area / perimeter ** 2
 
         # Draw bounding box
-        contour = contours[0]
-        approx = cv.approxPolyDP(contour, 0.009 * cv.arcLength(contour, True), True)
-        # drawContours(frame, [approx], 0, (255, 0, 0), 3)
+        if factor < 0.4 and factor > 0.1:
+            if area > 200 and area < 1000:
+                approx = cv.approxPolyDP(contour, 0.009 * cv.arcLength(contour, True), True)
+                cv.drawContours(frame, [approx], 0, (255, 0, 0), 3)
 
     cv.imshow('OpenCV', frame)
     if cv.waitKey(50) != -1:
