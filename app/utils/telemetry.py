@@ -2,6 +2,7 @@ import requests as rq
 
 url = 'http://localhost:5217/upload'
 
+
 def upload(data):
     return rq.post(url, data)
 
