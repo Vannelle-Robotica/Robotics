@@ -26,6 +26,7 @@ while capture.isOpened():
     if len(contours) > 0:
         contours = sorted(contours, key=cv.contourArea, reverse=True)
         contour = contours[0]
+
         area = cv.contourArea(contour)
         perimeter = cv.arcLength(contour, True)
 
