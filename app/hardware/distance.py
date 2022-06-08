@@ -5,8 +5,8 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # set GPIO Pins.
-GPIO_TRIGGER = 23
-GPIO_ECHO = 24
+GPIO_TRIGGER = 7
+GPIO_ECHO = 8
 
 # set pinmodes like in the arduino to input and output.
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
@@ -22,28 +22,31 @@ GPIO.setup(GPIO_ECHO, GPIO.IN)
 
 def distance():
     """Code to take distance data directly to raspberry Pi from ultra sonic distance sensors"""
-    startTime = time.time()
-    stopTime = time.time()
     # set Trigger to HIGH
     GPIO.output(GPIO_TRIGGER, True)
 
     # set Trigger after 0.01ms to LOW
-    time.sleep(0.00001)
+    time.sleep(0.0001)
     GPIO.output(GPIO_TRIGGER, False)
 
     # save StartTime by repeating until pi
     while GPIO.input(GPIO_ECHO) == 0:
-        startTime = time.time()
+        pass
+    startTime = time.time()
 
     # refresh until signal received
     while GPIO.input(GPIO_ECHO) == 1:
-        stopTime = time.time()
+        pass
+    stopTime = time.time()
 
     # time difference between start and arrival
     timeElapsed = stopTime - startTime
     # multiply with the sonic speed (34300 cm/s)
     # in arduino you use 0.034 or /29 because arduino measures in milliseconds not seconds
     # and divide by 2 to account for travel direction.
-    distance = (timeElapsed * 34300) / 2
+    distanceCm = (timeElapsed * 34300) / 2
 
-    return distance
+    return distanceCm
+
+
+print(distance())
