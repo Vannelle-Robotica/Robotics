@@ -37,7 +37,7 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
-        self.motors.Move(direction)
+        self.motors.Move(direction, speed)
         self.motors.Speed(speed)
 
     def update(self):
