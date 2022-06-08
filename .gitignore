@@ -1,3 +1,6 @@
+# Exclude python cache
+__pycache__
+
 # Exclude local directories
 /.idea
 /venv

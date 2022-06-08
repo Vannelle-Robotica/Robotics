@@ -3,11 +3,7 @@ from smbus import SMBus
 
 def to_int_list(msg):
     """Converts the specified msg to a list of integers representing the ASCII chars"""
-    ints = []
-
-    for i in range(len(msg)):
-        ints.append(ord(msg[i]))
-    return ints
+    return [ord(char) for char in msg]
 
 
 class Arduino:
