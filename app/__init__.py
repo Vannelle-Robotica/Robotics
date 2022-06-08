@@ -22,8 +22,11 @@ class Application:
 
         # Attempt to connect to controller
         print('Waiting for controller')
-        self.ble = BLEClient('78:E3:6D:10:C2:2E')
+        self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
         print('Connected')
+
+    def on_receive(self, data):
+        print(f'Received {data}')
 
     def update(self):
         print(f'Temperature: {get_temperature()}')
