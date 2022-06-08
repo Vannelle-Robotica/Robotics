@@ -54,33 +54,33 @@ class Motors:
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.LOW)
-            self.direction = 'z'
+            direction = 'z'
 
-        elif self.direction == 'f':
+        elif direction == 'f':
             print("forward")
             self.Forward()
             self.temp1 = 1
-            self.direction = 'z'
+            direction = 'z'
 
-        elif self.direction == 'b':
+        elif direction == 'b':
             print("backward")
             self.Backward()
             self.temp1 = 0
-            self.direction = 'z'
+            direction = 'z'
 
-        elif self.direction == 'rl':
+        elif direction == 'rl':
             GPIO.output(in1, GPIO.HIGH)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.HIGH)
 
-        elif self.direction == 'rr':
+        elif direction == 'rr':
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.HIGH)
             GPIO.output(in3, GPIO.HIGH)
             GPIO.output(in4, GPIO.LOW)
 
-        elif self.direction == 'tl':
+        elif direction == 'tl':
             if (temp1 == 1):
                 self.Forward()
             else:
