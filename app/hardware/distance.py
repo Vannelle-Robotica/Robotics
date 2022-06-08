@@ -5,8 +5,8 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # set GPIO Pins.
-GPIO_TRIGGER = 23
-GPIO_ECHO = 24
+GPIO_TRIGGER = 7
+GPIO_ECHO = 8
 
 # set pinmodes like in the arduino to input and output.
 GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
