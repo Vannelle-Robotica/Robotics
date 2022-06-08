@@ -1,3 +1,4 @@
+import re
 import time
 
 import RPi.GPIO as GPIO
@@ -26,7 +27,14 @@ class Application:
         print('Connected')
 
     def on_receive(self, data):
-        print(f'Received {data}')
+        match = re.search(r'^d (\w) b ([1-6]) s (\d+)$', data)
+        if match is None:
+            print(f'Invalid data received: ({data})')
+            return
+
+        # TODO
+        (direction, button, speed) = match.groups()
+        print(f'dir: {direction} button: {button} speed: {speed}')
 
     def update(self):
         print(f'Temperature: {get_temperature()}')
