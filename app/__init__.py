@@ -26,6 +26,8 @@ class Application:
         self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
         print('Connected')
 
+        self.motors = Motors()
+
     def on_receive(self, data):
         match = re.search(r'^d (\w) b ([1-6]) s (\d+)$', data)
         if match is None:
@@ -35,6 +37,8 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
+        self.motors.Move(direction)
+        self.motors.Speed(speed)
 
     def update(self):
         print(f'Temperature: {get_temperature()}')
