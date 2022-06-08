@@ -46,24 +46,10 @@ class Motors:
     GPIO.output(in3,GPIO.LOW)
     GPIO.output(in4,GPIO.HIGH)   
   
-  while(1):
   def Move(self, direction):
-    x=direction
-
-    
-    if x=='r':
-      print("run")
-      if(temp1==1):
-        self.Forward()
-        print("forward")
-        x='z'
-      else:
-        self.Backward()
-        print("backward")
-      x='z'
 
 
-    elif x=='s':
+    elif direction=='s':
       print("stop")
       GPIO.output(in1,GPIO.LOW)
       GPIO.output(in2,GPIO.LOW)
@@ -110,31 +96,12 @@ class Motors:
         self.Backward()
       p.ChangeDutyCycle(25)
       p2.ChangeDutyCycle(75)
-      
-    elif x=='l':
-      print("low")
-      p.ChangeDutyCycle(25)
-      p2.ChangeDutyCycle(25)
-      x='z'
-
-    elif x=='m':
-      print("medium")
-      p.ChangeDutyCycle(50)
-      p2.ChangeDutyCycle(50)
-      x='z'
-
-    elif x=='h':
-      print("high")
-      p.ChangeDutyCycle(75)
-      p2.ChangeDutyCycle(75)
-      x='z'
+    
+  def Speed(self, speed):
+     p.ChangeDutyCycle(speed)
+     p2.ChangeDutyCycle(speed)
+  
+    
 
 
-    elif x=='e':
-      GPIO.cleanup()
-      print("GPIO Clean up")
-    break
-
-    else:
-      print("<<<  wrong data  >>>")
-      print("please enter the defined data to continue.....")
+   
