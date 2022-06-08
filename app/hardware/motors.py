@@ -11,6 +11,7 @@ temp1 = 1
 
 class Motors:
     def __init__(self):
+        self.direction = None
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(in1, GPIO.OUT)
         GPIO.setup(in2, GPIO.OUT)
@@ -45,54 +46,55 @@ class Motors:
         GPIO.output(in3, GPIO.LOW)
         GPIO.output(in4, GPIO.HIGH)
 
-    def Move(self, direction):
+    def Move(self, direction, speed):
+        direction = direction
         if direction == 's':
             print("stop")
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.LOW)
-            x = 'z'
+            self.direction = 'z'
 
-        elif x == 'f':
+        elif self.direction == 'f':
             print("forward")
             self.Forward()
-            temp1 = 1
-            x = 'z'
+            self.temp1 = 1
+            self.direction = 'z'
 
-        elif x == 'b':
+        elif self.direction == 'b':
             print("backward")
             self.Backward()
-            temp1 = 0
-            x = 'z'
+            self.temp1 = 0
+            self.direction = 'z'
 
-        elif x == 'rl':
+        elif self.direction == 'rl':
             GPIO.output(in1, GPIO.HIGH)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.HIGH)
 
-        elif x == 'rr':
+        elif self.direction == 'rr':
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.HIGH)
             GPIO.output(in3, GPIO.HIGH)
             GPIO.output(in4, GPIO.LOW)
 
-        elif x == 'tl':
+        elif self.direction == 'tl':
             if (temp1 == 1):
                 self.Forward()
             else:
                 self.Backward()
-            self.p.ChangeDutyCycle(75)
-            self.p2.ChangeDutyCycle(25)
+            self.p.ChangeDutyCycle(speed * 0.75)
+            self.p2.ChangeDutyCycle(speed * 0.25)
 
-        elif x == 'tr':
+        elif direction == 'tr':
             if (temp1 == 1):
                 self.Forward()
             else:
                 self.Backward()
-            self.p.ChangeDutyCycle(25)
-            self.p2.ChangeDutyCycle(75)
+            self.p.ChangeDutyCycle(speed * 0.25)
+            self.p2.ChangeDutyCycle(speed * 0.75)
 
     def Speed(self, speed):
         self.p.ChangeDutyCycle(speed)
