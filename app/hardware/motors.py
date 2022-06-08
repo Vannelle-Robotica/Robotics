@@ -5,7 +5,7 @@ in2 = 6
 ena = 18
 in3 = 20
 in4 = 21
-enb = 13
+enb = 19
 temp1 = 1
 
 
