@@ -4,6 +4,7 @@ import RPi.GPIO as GPIO
 
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
+from hardware.motors import Motors
 from utils.ble import BLEClient
 from utils.telemetry import get_temperature
 
