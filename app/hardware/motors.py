@@ -47,8 +47,8 @@ class Motors:
     GPIO.output(in4,GPIO.HIGH)   
   
   while(1):
-  def Move(self):
-    x=input()
+  def Move(self, direction):
+    x=direction
 
     if x=='r':
       print("run")
