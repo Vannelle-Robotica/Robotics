@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 from time import sleep
 
 class Motors:
-  def__init__(self):
+  def __init__(self):
     in1 = 5
     in2 = 6
     ena = 18
