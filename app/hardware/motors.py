@@ -1,140 +1,95 @@
+import RPi.GPIO as GPIO
 
-import RPi.GPIO as GPIO          
-from time import sleep
+in1 = 5
+in2 = 6
+ena = 13
+in3 = 20
+in4 = 21
+enb = 18
+temp1 = 1
+
 
 class Motors:
-  def__init__(self):
-    in1 = 5
-    in2 = 6
-    ena = 18
-    in3 = 20
-    in4 = 21
-    enb = 13
-    temp1=1
+    def __init__(self):
+        self.direction = None
+        self.temp1 = 1
 
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(in1,GPIO.OUT)
-    GPIO.setup(in2,GPIO.OUT)
-    GPIO.setup(ena,GPIO.OUT)
-    GPIO.output(in1,GPIO.LOW)
-    GPIO.output(in2,GPIO.LOW)
-    p=GPIO.PWM(ena,1000)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(in1, GPIO.OUT)
+        GPIO.setup(in2, GPIO.OUT)
+        GPIO.setup(ena, GPIO.OUT)
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.LOW)
+        self.p = GPIO.PWM(ena, 1000)
 
-    GPIO.setup(in3,GPIO.OUT)
-    GPIO.setup(in4,GPIO.OUT)
-    GPIO.setup(enb,GPIO.OUT)
-    GPIO.output(in1,GPIO.LOW)
-    GPIO.output(in2,GPIO.LOW)
-    p2=GPIO.PWM(enb,1000)
+        GPIO.setup(in3, GPIO.OUT)
+        GPIO.setup(in4, GPIO.OUT)
+        GPIO.setup(enb, GPIO.OUT)
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.LOW)
+        self.p2 = GPIO.PWM(enb, 1000)
 
-    p.start(25)
-    p2.start(25)
-    print("\n")
-    print("The default speed & direction of motor is LOW & Forward.....")
-    print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
-    print("\n")  
-    
-  def Forward(self):
-    GPIO.output(in1,GPIO.HIGH)
-    GPIO.output(in2,GPIO.LOW)
-    GPIO.output(in3,GPIO.HIGH)
-    GPIO.output(in4,GPIO.LOW)
-    
-  def Backward(self):
-    GPIO.output(in1,GPIO.LOW)
-    GPIO.output(in2,GPIO.HIGH)
-    GPIO.output(in3,GPIO.LOW)
-    GPIO.output(in4,GPIO.HIGH)   
-  
-  while(1):
-  def Move(self, direction):
-    x=direction
+        self.p.start(25)
+        self.p2.start(25)
 
-    
-    if x=='r':
-      print("run")
-      if(temp1==1):
-        self.Forward()
-        print("forward")
-        x='z'
-      else:
-        self.Backward()
-        print("backward")
-      x='z'
+    def forward(self):
+        GPIO.output(in1, GPIO.HIGH)
+        GPIO.output(in2, GPIO.LOW)
+        GPIO.output(in3, GPIO.HIGH)
+        GPIO.output(in4, GPIO.LOW)
 
+    def backward(self):
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.HIGH)
+        GPIO.output(in3, GPIO.LOW)
+        GPIO.output(in4, GPIO.HIGH)
 
-    elif x=='s':
-      print("stop")
-      GPIO.output(in1,GPIO.LOW)
-      GPIO.output(in2,GPIO.LOW)
-      GPIO.output(in3,GPIO.LOW)
-      GPIO.output(in4,GPIO.LOW)
-      x='z'
+    def move(self, direction, speed):
+        if direction == 's':
+            print("stop")
+            GPIO.output(in1, GPIO.LOW)
+            GPIO.output(in2, GPIO.LOW)
+            GPIO.output(in3, GPIO.LOW)
+            GPIO.output(in4, GPIO.LOW)
 
-    elif x=='f':
-      print("forward")
-      self.Forward()
-      temp1=1
-      x='z'
+        elif direction == 'f':
+            print("forward")
+            self.Forward()
+            self.temp1 = 1
 
-    elif x=='b':
-      print("backward")
-      self.Backward()
-      temp1=0
-      x='z'
-    
-    elif x=='rl':
-      GPIO.output(in1,GPIO.HIGH)
-      GPIO.output(in2,GPIO.LOW)
-      GPIO.output(in3,GPIO.LOW)
-      GPIO.output(in4,GPIO.HIGH)
-      
-    elif x=='rr':
-      GPIO.output(in1,GPIO.LOW)
-      GPIO.output(in2,GPIO.HIGH)
-      GPIO.output(in3,GPIO.HIGH)
-      GPIO.output(in4,GPIO.LOW) 
-      
-    elif x=='tl':
-      if(temp1==1):
-        self.Forward()
-      else:
-        self.Backward() 
-      p.ChangeDutyCycle(75)
-      p2.ChangeDutyCycle(25)
-      
-    elif x=='tr':
-      if(temp1==1):
-        self.Forward()
-      else:
-        self.Backward()
-      p.ChangeDutyCycle(25)
-      p2.ChangeDutyCycle(75)
-      
-    elif x=='l':
-      print("low")
-      p.ChangeDutyCycle(25)
-      p2.ChangeDutyCycle(25)
-      x='z'
+        elif direction == 'b':
+            print("backward")
+            self.Backward()
+            self.temp1 = 0
 
-    elif x=='m':
-      print("medium")
-      p.ChangeDutyCycle(50)
-      p2.ChangeDutyCycle(50)
-      x='z'
+        elif direction == 'rl':
+            GPIO.output(in1, GPIO.HIGH)
+            GPIO.output(in2, GPIO.LOW)
+            GPIO.output(in3, GPIO.LOW)
+            GPIO.output(in4, GPIO.HIGH)
 
-    elif x=='h':
-      print("high")
-      p.ChangeDutyCycle(75)
-      p2.ChangeDutyCycle(75)
-      x='z'
+        elif direction == 'rr':
+            GPIO.output(in1, GPIO.LOW)
+            GPIO.output(in2, GPIO.HIGH)
+            GPIO.output(in3, GPIO.HIGH)
+            GPIO.output(in4, GPIO.LOW)
 
+        elif direction == 'tl':
+            if self.temp1 == 1:
+                self.forward()
+            else:
+                self.backward()
+            self.p.ChangeDutyCycle(speed * 0.75)
+            self.p2.ChangeDutyCycle(speed * 0.25)
 
-    elif x=='e':
-      GPIO.cleanup()
-      print("GPIO Clean up")
-    break
+        elif direction == 'tr':
+            if self.temp1 == 1:
+                self.forward()
+            else:
+                self.backward()
+            self.p.ChangeDutyCycle(speed * 0.25)
+            self.p2.ChangeDutyCycle(speed * 0.75)
 
-    else:
-      print("<<<  wrong data  >>>")
-      print("please enter the defined data to continue.....")
+    def speed(self, speed):
+        self.p.ChangeDutyCycle(speed)
+        self.p2.ChangeDutyCycle(speed)
