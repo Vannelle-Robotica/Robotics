@@ -1,4 +1,3 @@
-import enum
 import re
 import time
 
@@ -11,21 +10,7 @@ from utils.ble import BLEClient
 from utils.telemetry import get_temperature
 
 
-class Modes(enum.Enum):
-    autonomous = 0
-    controlled = 1
-    lineDance = 2
-    dancing = 3
-
-    def next(self):
-        v = self.value
-        if v == 3:
-            return Modes(0)
-        return Modes(v + 1)
-
-
 class Application:
-    currentMode = Modes.controlled
 
     def __init__(self):
         # Initialize LoadCells
@@ -36,11 +21,18 @@ class Application:
         print('Initializing Arduino connection')
         self.arduino = Arduino('0x8')
 
+        # Initialize Motors
         self.motors = Motors()
 
         # Attempt to connect to controller
         print('Waiting for controller')
-        self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
+
+        while True:
+            try:
+                self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
+                break
+            except:
+                pass
         print('Connected')
 
     def on_receive(self, data):
@@ -52,24 +44,15 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
-        if button == 6:
-            self.currentMode == Modes.next(self.currentMode)
-        if self.currentMode != Modes.controlled:
-            self.motors.Move(direction, int(speed))
-            self.motors.Speed(int(speed))
+        self.motors.Move(direction, int(speed))
+        self.motors.speed(int(speed))
 
     def update(self):
-        print(f'Temperature: {get_temperature()}')
-        match self.currentMode:  # TODO: Add functionality to the different modes in this match case
-            case Modes.autonomous:
-                pass
-            case Modes.controlled:
-                pass
-            case Modes.lineDance:
-                pass
-            case Modes.dancing:
-                pass
+        weight = self.loadCells.get_combined_weight()
 
+        print(f'Weight: {weight}')
+        self.ble.write(str(weight))
+        print(f'Temperature: {get_temperature()}')
         time.sleep(.5)
 
     def is_connected(self):
