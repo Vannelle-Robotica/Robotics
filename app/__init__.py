@@ -1,9 +1,11 @@
+import re
 import time
 
 import RPi.GPIO as GPIO
 
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
+from hardware.motors import Motors
 from utils.ble import BLEClient
 from utils.telemetry import get_temperature
 
@@ -19,10 +21,25 @@ class Application:
         print('Initializing Arduino connection')
         self.arduino = Arduino('0x8')
 
+        self.motors = Motors()
+
         # Attempt to connect to controller
         print('Waiting for controller')
-        self.ble = BLEClient('78:E3:6D:10:C2:2E')
+        self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
         print('Connected')
+
+
+    def on_receive(self, data):
+        match = re.search(r'^d (\w+) b ([0-6]) s (\d+)$', data)
+        if match is None:
+            print(f'Invalid data received: ({data})')
+            return
+
+        # TODO
+        (direction, button, speed) = match.groups()
+        print(f'dir: {direction} button: {button} speed: {speed}')
+        self.motors.Move(direction, int(speed))
+        self.motors.Speed(int(speed))
 
     def update(self):
         print(f'Temperature: {get_temperature()}')

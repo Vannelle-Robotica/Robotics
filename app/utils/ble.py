@@ -5,13 +5,14 @@ from bluepy import btle
 
 class Delegate(btle.DefaultDelegate):
 
-    def __init__(self):
+    def __init__(self, on_receive):
         btle.DefaultDelegate.__init__(self)
+        self.on_receive = on_receive
 
     def handleNotification(self, handle, data):
         try:
-            dataDecoded = data.decode()
-            print(dataDecoded)
+            decoded = data.decode()
+            self.on_receive(decoded)
         except UnicodeError:
             print(f'UnicodeError: {data}')
 
@@ -19,7 +20,7 @@ class Delegate(btle.DefaultDelegate):
 class BLEClient:
     """"Bluetooth low energy client wrapper"""
 
-    def __init__(self, addr):
+    def __init__(self, addr, on_receive):
         super().__init__()
         self.bytes_to_send = None
         self.rqs_to_send = False
@@ -27,7 +28,7 @@ class BLEClient:
 
         # Connect and set delegate
         self.per = btle.Peripheral(addr)
-        self.per.setDelegate(Delegate())
+        self.per.setDelegate(Delegate(on_receive))
 
         # Initialize service and characteristic
         self.svc = self.per.getServiceByUUID('6E400001-B5A3-F393-E0A9-E50E24DCCA9E')
@@ -76,4 +77,5 @@ class BLEClient:
 
     def is_connected(self):
         """Checks if the client is still connected to the server"""
-        return self.per.getState() == 'conn'
+        return True
+        # return self.per.getState() == 'conn'
