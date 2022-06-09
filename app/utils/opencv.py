@@ -1,3 +1,4 @@
+import math
 import cv2 as cv
 from app.hardware import motors
 
@@ -37,17 +38,17 @@ def turn_to_object(frame, contours):
 
     # rechter wielen moeten harder rijden
     if cX < lowerWidth:
-        motors.move(motors,"rl",2)
+        motors.move(motors,"rl",60)
 
     # linker wielen moeten harder rijden
     if cX > higherWidth:
-        motors.move(motors,"rr",2)
+        motors.move(motors,"rr",60)
 
     # beide niet dan rechtdoor rijden
     else:
-        motors.move(motors,"f",2)
+        motors.move(motors,"f",60)
         cv.waitKey(3000)
-        motors.move(motors, "s", 2)
+        motors.move(motors, "s", 0)
 
 
 def follow_cube(frame, contours):
@@ -61,8 +62,8 @@ def follow_cube(frame, contours):
 
     # rechter wielen moeten harder rijden
     if cX < lowerWidth:
-        motors.move(motors, "rl", 2)
+        motors.move(motors, "rl", 60)
 
     # linker wielen moeten harder rijden
     if cX > higherWidth:
-        motors.move(motors, "rr", 2)
+        motors.move(motors, "rr", 60)
