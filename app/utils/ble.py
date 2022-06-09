@@ -77,5 +77,6 @@ class BLEClient:
 
     def is_connected(self):
         """Checks if the client is still connected to the server"""
+        # TODO: Impl
         return True
         # return self.per.getState() == 'conn'
