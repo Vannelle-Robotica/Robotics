@@ -29,10 +29,6 @@ class Motors:
 
         self.p.start(25)
         self.p2.start(25)
-        print("\n")
-        print("The default speed & direction of motor is LOW & Forward.....")
-        print("r-run s-stop f-forward b-backward l-low m-medium h-high e-exit")
-        print("\n")
 
     def Forward(self):
         GPIO.output(in1, GPIO.HIGH)
@@ -47,26 +43,22 @@ class Motors:
         GPIO.output(in4, GPIO.HIGH)
 
     def Move(self, direction, speed):
-        direction = direction
         if direction == 's':
             print("stop")
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.LOW)
-            direction = 'z'
 
         elif direction == 'f':
             print("forward")
             self.Forward()
             self.temp1 = 1
-            direction = 'z'
 
         elif direction == 'b':
             print("backward")
             self.Backward()
             self.temp1 = 0
-            direction = 'z'
 
         elif direction == 'rl':
             GPIO.output(in1, GPIO.HIGH)
