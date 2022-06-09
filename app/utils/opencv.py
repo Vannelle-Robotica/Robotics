@@ -3,10 +3,8 @@ from app.hardware import motors
 
 # Blue square mask
 BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
-
 # Cigarette mask
 CIGARETTE = [(10, 100, 0), (28, 255, 255)]
-
 
 def get_object(frame, mask, min_size):
     """Finds the largest object with the specified mask in the frame"""
@@ -27,6 +25,8 @@ def get_object(frame, mask, min_size):
     return None
 
 def turn_to_object(frame, contours):
+    """this function turns to the founded cigarette and drives to it"""
+    # Get width of screen and take a margin of the middle
     __, width, ___ = frame.shape
     width = width / 2
     lowerWidth = width - 50
@@ -66,5 +66,3 @@ def follow_cube(frame, contours):
     # linker wielen moeten harder rijden
     if cX > higherWidth:
         motors.move(motors, "rr", 2)
-
-
