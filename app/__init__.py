@@ -10,7 +10,21 @@ from utils.ble import BLEClient
 from utils.telemetry import get_temperature
 
 
+class Modes(enum.Enum):
+    autonomous = 0
+    controlled = 1
+    lineDance = 2
+    dancing = 3
+
+    def next(self):
+        v = self.value
+        if v == 3:
+            return Modes(0)
+        return Modes(v + 1)
+
+
 class Application:
+    currentMode = Modes.controlled
 
     def __init__(self):
         # Initialize LoadCells
@@ -35,6 +49,7 @@ class Application:
                 pass
         print('Connected')
 
+
     def on_receive(self, data):
         match = re.search(r'^d (\w+) b ([0-6]) s (\d+)$', data)
         if match is None:
@@ -44,10 +59,24 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
-        self.motors.Move(direction, int(speed))
-        self.motors.speed(int(speed))
+        if button == 6:
+            self.currentMode = Modes.next(self.currentMode)
+        if self.currentMode != Modes.controlled:
+            self.motors.move(direction, int(speed))
+            self.motors.speed(int(speed))
+
 
     def update(self):
+        match self.currentMode:  # TODO: Add functionality to the different modes in this match case
+            case Modes.autonomous:
+                pass
+            case Modes.controlled:
+                pass
+            case Modes.lineDance:
+                pass
+            case Modes.dancing:
+                pass
+
         weight = self.loadCells.get_combined_weight()
 
         print(f'Weight: {weight}')
