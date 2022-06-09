@@ -1,5 +1,4 @@
 import math
-
 import cv2 as cv
 
 # Initialize video capture and image classifier
@@ -22,10 +21,29 @@ while capture.isOpened():
     filtered = cv.bitwise_and(frame, frame, mask=mask)
     filtered = cv.cvtColor(filtered, cv.COLOR_RGB2GRAY)
     contours, _ = cv.findContours(filtered, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+    __, width, ___ = capture.shape
+    width = width / 2
+    lowerWidth = width - 50
+    higherWidth = width + 50
 
     if len(contours) > 0:
         contours = sorted(contours, key=cv.contourArea, reverse=True)
         contour = contours[0]
+
+        # Draws a Centroid in the circle with this fomula
+        M = cv.moments(contours[0])
+        cX = int(M["m10"] / M["m00"])
+        cY = int(M["m01"] / M["m00"])
+
+        # rechter wielen moeten harder rijden
+        if cX < lowerWidth:
+            exit
+        # linker wielen moeten harder rijden
+        if cX > higherWidth:
+            exit
+        # beide niet dan rechtdoor rijden
+
+        cv.circle(capture, (cX, cY), 1, (0, 0, 0), 2)
 
         area = cv.contourArea(contour)
         perimeter = cv.arcLength(contour, True)

@@ -2,7 +2,6 @@ import math
 import os
 import cv2 as cv
 from cv2 import imshow, waitKey
-from screeninfo import get_monitors
 
 if not os.path.exists('positive'):
     print('positive images not found')
