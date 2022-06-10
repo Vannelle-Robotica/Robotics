@@ -1,3 +1,5 @@
+import math
+
 import requests as rq
 import time
 import psutil
@@ -27,17 +29,14 @@ def get_weight():
     return weight
 
 def get_speed():
-    # diameter = 105 mm
-    # diameter * pi = distance
-    distance = 0.3298 # m/s
-    start = time.perf_counter() # sec
-    #if angle == 360:
-    stop = time.perf_counter()
-    #else:
-     #   exit()
-    timebetween = stop - start
-    speed = distance /timebetween
-    return speed
+    diameter = 4.13386 # In Inches
+    circumference = (diameter * math.pi) / 12 # In Feet
+    revolutionsPerMile = circumference / 5280
+    wheelSpeed = 310 # RPM
+    milesPerHour = (wheelSpeed / revolutionsPerMile) * 60
+    kilometerPerHour = milesPerHour * 1,609
+
+    return kilometerPerHour
 
 def get_mode():
     mode = Application.currentMode
