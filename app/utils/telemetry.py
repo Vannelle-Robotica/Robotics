@@ -38,8 +38,7 @@ def get_speed():
     maxRpm = 310 / rpmRatio # RPM of full capacity
     currentRpm = maxRpm * speed / 255
     milesPerHour = (currentRpm / revolutionsPerMile) * 60
-    kilometerPerHour = milesPerHour * 1.609
-    meterperseconde = kilometerPerHour / 3.6
+    meterperseconde = milesPerHour / 2.237
 
     return meterperseconde
 
