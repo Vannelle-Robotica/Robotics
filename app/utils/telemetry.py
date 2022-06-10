@@ -32,15 +32,16 @@ def get_weight():
 def get_speed():
     diameter = 4.13386 # In Inches
     circumference = (diameter * math.pi) / 12 # In Feet
-    revolutionsPerMile = circumference / 5280
-    speed = Motors.speed()
+    revolutionsPerMile = 5280 / circumference
+    speed = 255
     rpmRatio = 1.5
     maxRpm = 310 / rpmRatio # RPM of full capacity
     currentRpm = maxRpm * speed / 255
-    milesPerHour = (revolutionsPerMile / currentRpm) * 60
+    milesPerHour = (currentRpm / revolutionsPerMile) * 60
     kilometerPerHour = milesPerHour * 1.609
+    meterperseconde = kilometerPerHour / 3.6
 
-    return kilometerPerHour
+    return meterperseconde
 
 # Get operation mode
 def get_mode():
@@ -66,7 +67,7 @@ data = {
     'Mode': get_mode(),
     'Temperature': get_temperature(),
     'Weight': get_weight(),
-    'BatteryPersentage': get_batterylvl(),
+    'BatteryPercentage': get_batterylvl(),
     'Speed': get_speed(),
     'VacuumStatus': get_vacuumstatus()
 }
