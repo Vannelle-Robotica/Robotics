@@ -1,11 +1,10 @@
-import math
 import cv2 as cv
-from app.hardware import motors
 
 # Blue square mask
 BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
 # Cigarette mask
 CIGARETTE = [(10, 100, 0), (28, 255, 255)]
+
 
 def get_object(frame, mask, min_size):
     """Finds the largest object with the specified mask in the frame"""
@@ -20,12 +19,13 @@ def get_object(frame, mask, min_size):
     contours = sorted(contours, key=cv.contourArea, reverse=True)
 
     if len(contours) > 0 and cv.contourArea(contours[0]) > min_size:
-        #turn_to_object(frame, contours)
+        # turn_to_object(frame, contours)
         follow_cube(frame, contours)
         return contours[0]
     return None
 
-def turn_to_object(frame, contours):
+
+def turn_to_object(frame, contours, motor):
     """this function turns to the founded cigarette and drives to it"""
     # Get width of screen and take a margin of the middle
     __, width, ___ = frame.shape
@@ -38,20 +38,20 @@ def turn_to_object(frame, contours):
 
     # rechter wielen moeten harder rijden
     if cX < lowerWidth:
-        motors.move(motors,"rl",60)
+        motor.move("rl", 60)
 
     # linker wielen moeten harder rijden
     if cX > higherWidth:
-        motors.move(motors,"rr",60)
+        motor.move("rr", 60)
 
     # beide niet dan rechtdoor rijden
     else:
-        motors.move(motors,"f",60)
+        motor.move("f", 60)
         cv.waitKey(3000)
-        motors.move(motors, "s", 0)
+        motor.move("s", 0)
 
 
-def follow_cube(frame, contours):
+def follow_cube(frame, contours, motor):
     __, width, ___ = frame.shape
     width = width / 2
     lowerWidth = width - 50
@@ -62,8 +62,8 @@ def follow_cube(frame, contours):
 
     # rechter wielen moeten harder rijden
     if cX < lowerWidth:
-        motors.move(motors, "rl", 60)
+        motor.move("rl", 60)
 
     # linker wielen moeten harder rijden
     if cX > higherWidth:
-        motors.move(motors, "rr", 60)
+        motor.move("rr", 60)
