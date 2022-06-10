@@ -30,13 +30,26 @@ def get_weight():
 
 # Get speed from the servomotors
 def get_speed():
-    diameter = 4.13386 # In Inches
-    circumference = (diameter * math.pi) / 12 # In Feet
+    # In Inches
+    diameter = 4.13386
+
+    # Calculate Circumference in feet
+    circumference = (diameter * math.pi) / 12
+
+    # Calculate revolutions per mile with the circumference
     revolutionsPerMile = 5280 / circumference
-    speed = 255
-    rpmRatio = 1.5
-    maxRpm = 310 / rpmRatio # RPM of full capacity
+
+    # Get the current speed of the robot
+    speed = Motors.speed()
+
+    # RPM Gear ratio and calculating Max RPM using the gear ratio
+    gearRatio = 1.5
+    maxRpm = 310 / gearRatio
+
+    # Calculating the current RPM with the speed and max RPM
     currentRpm = maxRpm * speed / 255
+
+    # Calculating the speed in miles per hour and converting it to meters per second
     milesPerHour = (currentRpm / revolutionsPerMile) * 60
     meterperseconde = milesPerHour / 2.237
 
@@ -50,11 +63,13 @@ def get_mode():
 
 # Get battery capacity
 def get_batterylvl():
+    # Get battery level using the psutil library
     batterylvl = psutil.sensors_battery()
     batteryPersentage = str(batterylvl.percent)
+
     return batteryPersentage
 
-# Get the state of the vacuumcleaner
+# Get the state of the vacuum cleaner
 def get_vacuumstatus():
     status = False
     if opencv.turn_to_object:
@@ -62,6 +77,7 @@ def get_vacuumstatus():
 
     return status
 
+# Data that will be send with the POST request
 data = {
     'Mode': get_mode(),
     'Temperature': get_temperature(),
