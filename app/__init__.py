@@ -9,24 +9,13 @@ from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
 from hardware.motors import Motors
 from utils.ble import BLEClient
+from utils.operatingmode import OperatingMode
 from utils.telemetry import get_temperature
 
 
-class Modes(enum.Enum):
-    autonomous = 0
-    controlled = 1
-    lineDance = 2
-    dancing = 3
-
-    def next(self):
-        v = self.value
-        if v == 3:
-            return Modes(0)
-        return Modes(v + 1)
-
-
 class Application:
-    currentMode = Modes.controlled
+    currentMode = OperatingMode.controlled
+
     def __init__(self):
         # Initialize LoadCells
         print('Initializing LoadCells')
@@ -54,7 +43,7 @@ class Application:
         print('Connected')
 
     def on_receive(self, data):
-        match = re.search(r'^d (\w+) b ([0-6]) s (\d+)$', data)
+        match = re.search(r'^d (\w{1,2}) b ([0-6]) s (\d+)$', data)
         if match is None:
             print(f'Invalid data received: ({data})')
             return
@@ -63,8 +52,8 @@ class Application:
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
         if button == 6:
-            self.currentMode = Modes.next(self.currentMode)
-        if self.currentMode != Modes.controlled:
+            self.currentMode = OperatingMode.next(self.currentMode)
+        if self.currentMode != OperatingMode.controlled:
             self.motors.move(direction, int(speed))
             self.motors.speed(int(speed))
         if button == 1:
@@ -72,13 +61,13 @@ class Application:
 
     def update(self):
         match self.currentMode:  # TODO: Add functionality to the different modes in this match case
-            case Modes.autonomous:
+            case OperatingMode.autonomous:
                 pass
-            case Modes.controlled:
+            case OperatingMode.controlled:
                 pass
-            case Modes.lineDance:
+            case OperatingMode.lineDance:
                 pass
-            case Modes.dancing:
+            case OperatingMode.dancing:
                 pass
 
         weight = self.loadCells.get_combined_weight()
