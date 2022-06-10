@@ -69,9 +69,9 @@ class Application:
             case 1:
                 self.magnet.toggle_magnet()
             case 2:
-                self.arduino.moveArm()
+                self.arduino.toggle_arm()
             case 3:
-                self.arduino.changeWeels()
+                self.arduino.toggle_wheels()
             case 4:
                 pass
             case 5:

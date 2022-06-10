@@ -14,6 +14,7 @@ class Arduino:
         self.address = address
         self.down = False
         self.open = False
+        self.on = False
 
     def __del__(self):
         self.bus.close()
@@ -23,14 +24,16 @@ class Arduino:
         data = to_int_list(msg)
         self.bus.write_i2c_block_data(self.address, 0, data)
 
-    def moveArm(self):
+    def toggle_arm(self):
+        """Toggles the arm between up and down"""
         self.down = not self.down
         if self.down:
-            self.write('41023')  # TODO calculate amount of degrees needed to turn arm up or down
+            self.write('41023')  # TODO calculate exact amount of degrees needed to turn arm up or down
         else:
             self.write('40')
 
-    def changeWeels(self):
+    def toggle_wheels(self):
+        """Toggles the wheels between the open and closed state"""
         self.open = not self.open
         if self.open:
             self.write('0102')
@@ -42,3 +45,10 @@ class Arduino:
             self.write('1546')
             self.write('2477')
             self.write('3477')
+
+    def use_vaccuum(self):
+        self.on = not self.on
+        if self.on:
+            self.write('50')  # TODO calculate exact amount of degrees needed to turn arm up or down
+        else:
+            self.write('40')
