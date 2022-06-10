@@ -1,4 +1,3 @@
-import enum
 import re
 import time
 
@@ -51,13 +50,21 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
-        if button == 6:
-            self.currentMode = OperatingMode.next(self.currentMode)
-        if self.currentMode != OperatingMode.controlled:
-            self.motors.move(direction, int(speed))
-            self.motors.speed(int(speed))
-        if button == 1:
-            self.magnet.toggle_magnet()
+        self.motors.move(direction, int(speed))
+        self.motors.speed(int(speed))
+        match button:
+            case 1:
+                self.magnet.toggle_magnet()
+            case 2:
+                self.arduino.moveArm()
+            case 3:
+                self.arduino.changeWeels()
+            case 4:
+                pass
+            case 5:
+                pass
+            case 6:
+                self.currentMode = OperatingMode.next(self.currentMode)
 
     def update(self):
         match self.currentMode:  # TODO: Add functionality to the different modes in this match case
