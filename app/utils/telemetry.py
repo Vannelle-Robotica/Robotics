@@ -1,7 +1,8 @@
-import time
+import math
 
-import psutil
 import requests as rq
+import time
+import psutil
 
 from app import Application
 from app.hardware import loadcell
@@ -23,38 +24,31 @@ def get_temperature():
     file.close()
     return float(contents) / 1000
 
-
 def get_weight():
     weight = loadcell.get_weight(loadcell)
     return weight
 
-
 def get_speed():
-    # diameter = 105 mm
-    # diameter * pi = distance
-    distance = 0.3298  # m/s
-    start = time.perf_counter()  # sec
-    # if angle == 360:
-    stop = time.perf_counter()
-    # else:
-    #   exit()
-    difference = stop - start
-    speed = distance / difference
-    return speed
+    diameter = 4.13386 # In Inches
+    circumference = (diameter * math.pi) / 12 # In Feet
+    revolutionsPerMile = circumference / 5280
+    wheelSpeed = 310 # RPM
+    milesPerHour = (wheelSpeed / revolutionsPerMile) * 60
+    kilometerPerHour = milesPerHour * 1,609
 
+    return kilometerPerHour
 
 def get_mode():
     mode = Application.currentMode
 
     return mode
 
+def get_batterylvl():
+    batterylvl = psutil.sensors_battery()
+    batteryPersentage = str(batterylvl.percent)
+    return batteryPersentage
 
-def get_battery_lvl():
-    battery = psutil.sensors_battery()
-    return str(battery.percent)
-
-
-def get_vacuum_status():
+def get_vacuumstatus():
     status = False
     if opencv.turn_to_object:
         status = True
@@ -66,9 +60,9 @@ def get_vacuum_status():
 #     'Mode': get_mode(),
 #     'Temperature': get_temperature(),
 #     'Weight': get_weight(),
-#     'BatteryPercentage': get_battery_lvl(),
+#     'BatteryPersentage': get_batterylvl(),
 #     'Speed': get_speed(),
-#     'VacuumStatus': get_vacuum_status()
+#     'VacuumStatus': get_vacuumstatus()
 # }
 
 # response = rq.post(url, data)
