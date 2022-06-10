@@ -6,6 +6,7 @@ import RPi.GPIO as GPIO
 
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
+from hardware.magnet import Magnet
 from hardware.motors import Motors
 from utils.ble import BLEClient
 from utils.telemetry import get_temperature
@@ -26,7 +27,6 @@ class Modes(enum.Enum):
 
 class Application:
     currentMode = Modes.controlled
-
     def __init__(self):
         # Initialize LoadCells
         print('Initializing LoadCells')
@@ -38,6 +38,9 @@ class Application:
 
         # Initialize Motors
         self.motors = Motors()
+
+        # initilize magnet
+        self.magnet = Magnet()
 
         # Attempt to connect to controller
         print('Waiting for controller')
@@ -64,6 +67,8 @@ class Application:
         if self.currentMode != Modes.controlled:
             self.motors.move(direction, int(speed))
             self.motors.speed(int(speed))
+        if button == 1:
+            self.magnet.toggle_magnet()
 
     def update(self):
         match self.currentMode:  # TODO: Add functionality to the different modes in this match case
