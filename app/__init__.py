@@ -12,6 +12,19 @@ from utils.operatingmode import OperatingMode
 from utils.telemetry import get_temperature
 
 
+class Modes(enum.Enum):
+    autonomous = 0
+    controlled = 1
+    lineDance = 2
+    dancing = 3
+
+    def next(self):
+        v = self.value
+        if v == 3:
+            return Modes(0)
+        return Modes(v + 1)
+
+
 class Application:
     currentMode = OperatingMode.controlled
 
@@ -65,6 +78,7 @@ class Application:
                 pass
             case 6:
                 self.currentMode = OperatingMode.next(self.currentMode)
+
 
     def update(self):
         match self.currentMode:  # TODO: Add functionality to the different modes in this match case
