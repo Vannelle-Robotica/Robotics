@@ -1,3 +1,4 @@
+import enum
 import re
 import time
 
@@ -5,15 +6,27 @@ import RPi.GPIO as GPIO
 
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
+from hardware.magnet import Magnet
 from hardware.motors import Motors
 from utils.ble import BLEClient
-from utils.operatingmode import OperatingMode
 from utils.telemetry import get_temperature
 
 
-class Application:
-    currentMode = OperatingMode.controlled
+class Modes(enum.Enum):
+    autonomous = 0
+    controlled = 1
+    lineDance = 2
+    dancing = 3
 
+    def next(self):
+        v = self.value
+        if v == 3:
+            return Modes(0)
+        return Modes(v + 1)
+
+
+class Application:
+    currentMode = Modes.controlled
     def __init__(self):
         # Initialize LoadCells
         print('Initializing LoadCells')
@@ -25,6 +38,9 @@ class Application:
 
         # Initialize Motors
         self.motors = Motors()
+
+        # initilize magnet
+        self.magnet = Magnet()
 
         # Attempt to connect to controller
         print('Waiting for controller')
@@ -38,7 +54,7 @@ class Application:
         print('Connected')
 
     def on_receive(self, data):
-        match = re.search(r'^d (\w{1,2}) b ([0-6]) s (\d+)$', data)
+        match = re.search(r'^d (\w+) b ([0-6]) s (\d+)$', data)
         if match is None:
             print(f'Invalid data received: ({data})')
             return
@@ -47,20 +63,22 @@ class Application:
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
         if button == 6:
-            self.currentMode = OperatingMode.next(self.currentMode)
-        if self.currentMode != OperatingMode.controlled:
+            self.currentMode = Modes.next(self.currentMode)
+        if self.currentMode != Modes.controlled:
             self.motors.move(direction, int(speed))
             self.motors.speed(int(speed))
+        if button == 1:
+            self.magnet.toggle_magnet()
 
     def update(self):
         match self.currentMode:  # TODO: Add functionality to the different modes in this match case
-            case OperatingMode.autonomous:
+            case Modes.autonomous:
                 pass
-            case OperatingMode.controlled:
+            case Modes.controlled:
                 pass
-            case OperatingMode.lineDance:
+            case Modes.lineDance:
                 pass
-            case OperatingMode.dancing:
+            case Modes.dancing:
                 pass
 
         weight = self.loadCells.get_combined_weight()
