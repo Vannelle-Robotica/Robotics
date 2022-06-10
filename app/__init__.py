@@ -7,10 +7,12 @@ from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.motors import Motors
 from utils.ble import BLEClient
+from utils.operatingmode import OperatingMode
 from utils.telemetry import get_temperature
 
 
 class Application:
+    currentMode = OperatingMode.controlled
 
     def __init__(self):
         # Initialize LoadCells
@@ -36,7 +38,7 @@ class Application:
         print('Connected')
 
     def on_receive(self, data):
-        match = re.search(r'^d (\w+) b ([0-6]) s (\d+)$', data)
+        match = re.search(r'^d (\w{1,2}) b ([0-6]) s (\d+)$', data)
         if match is None:
             print(f'Invalid data received: ({data})')
             return
@@ -44,10 +46,23 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         print(f'dir: {direction} button: {button} speed: {speed}')
-        self.motors.Move(direction, int(speed))
-        self.motors.speed(int(speed))
+        if button == 6:
+            self.currentMode = OperatingMode.next(self.currentMode)
+        if self.currentMode != OperatingMode.controlled:
+            self.motors.move(direction, int(speed))
+            self.motors.speed(int(speed))
 
     def update(self):
+        match self.currentMode:  # TODO: Add functionality to the different modes in this match case
+            case OperatingMode.autonomous:
+                pass
+            case OperatingMode.controlled:
+                pass
+            case OperatingMode.lineDance:
+                pass
+            case OperatingMode.dancing:
+                pass
+
         weight = self.loadCells.get_combined_weight()
 
         print(f'Weight: {weight}')
