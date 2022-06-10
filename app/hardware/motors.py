@@ -54,12 +54,12 @@ class Motors:
 
         elif direction == 'f':
             print("forward")
-            self.Forward()
+            self.forward()
             self.temp1 = 1
 
         elif direction == 'b':
             print("backward")
-            self.Backward()
+            self.backward()
             self.temp1 = 0
 
         elif direction == 'rl':
@@ -93,3 +93,4 @@ class Motors:
     def speed(self, speed):
         self.p.ChangeDutyCycle(speed)
         self.p2.ChangeDutyCycle(speed)
+

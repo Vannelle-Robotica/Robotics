@@ -3,7 +3,7 @@ import time
 import psutil
 
 from app import Application
-from app.hardware import loadcell
+from app.hardware.loadcell import LoadCell
 from app.utils import opencv
 
 url = 'http://localhost:5217/upload'
@@ -23,7 +23,7 @@ def get_temperature():
     return float(contents) / 1000
 
 def get_weight():
-    weight = loadcell.get_weight(loadcell)
+    weight = LoadCell.get_weight()
     return weight
 
 def get_speed():
