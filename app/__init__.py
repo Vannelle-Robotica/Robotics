@@ -1,3 +1,4 @@
+import enum
 import re
 import time
 
@@ -5,6 +6,7 @@ import RPi.GPIO as GPIO
 
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
+from hardware.magnet import Magnet
 from hardware.motors import Motors
 from utils.ble import BLEClient
 from utils.operatingmode import OperatingMode
@@ -25,6 +27,9 @@ class Application:
 
         # Initialize Motors
         self.motors = Motors()
+
+        # initilize magnet
+        self.magnet = Magnet()
 
         # Attempt to connect to controller
         print('Waiting for controller')
@@ -52,6 +57,8 @@ class Application:
         if self.currentMode != OperatingMode.controlled:
             self.motors.move(direction, int(speed))
             self.motors.speed(int(speed))
+        if button == 1:
+            self.magnet.toggle_magnet()
 
 
     def update(self):
