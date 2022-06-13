@@ -3,10 +3,6 @@ import math
 import psutil
 import requests as rq
 
-from app.hardware.loadcell import LoadCells
-from app.hardware.motors import Motors
-from app.utils import opencv
-
 url = 'http://localhost:5217/upload'
 
 
@@ -34,11 +30,6 @@ def get_temperature():
     return float(contents) / 1000
 
 
-# Get Weight from the loadcells
-def get_weight():
-    weight = LoadCells.get_combined_weight()
-    return weight
-
 
 # Get speed from the servomotors
 def get_speed():
@@ -51,8 +42,8 @@ def get_speed():
     # Calculate revolutions per mile with the circumference
     revolutionsPerMile = 5280 / circumference
 
-    # Get the current speed of the robot
-    speed = Motors.speed()
+    # TODO: Get the current speed of the robot
+    speed = 0  # Motors.speed()
 
     # RPM Gear ratio and calculating Max RPM using the gear ratio
     gearRatio = 1.5
@@ -72,15 +63,14 @@ def get_speed():
 def get_battery_lvl():
     # Get battery level using the psutil library
     batterylvl = psutil.sensors_battery()
-    batteryPersentage = str(batterylvl.percent)
+    batteryPercentage = str(batterylvl.percent)
 
-    return batteryPersentage
+    return batteryPercentage
 
-
-# Get the state of the vacuum cleaner
-def get_vacuum_status():
-    status = False
-    if opencv.turn_to_object:
-        status = True
-
-    return status
+# TODO: Get the state of the vacuum cleaner
+# def get_vacuum_status():
+#     status = False
+#     if opencv.turn_to_object:
+#         status = True
+#
+#     return status
