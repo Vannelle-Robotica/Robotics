@@ -1,17 +1,27 @@
 import math
-import requests as rq
-import time
+
 import psutil
-from app import Application
+import requests as rq
+
 from app.hardware import loadcell
 from app.hardware.motors import Motors
 from app.utils import opencv
 
 url = 'http://localhost:5217/upload'
 
+
 # Upload Data
-def upload(data):
+def upload(mode):
+    data = {
+        'Mode': mode,
+        'Temperature': get_temperature(),
+        'Weight': get_weight(),
+        'BatteryPercentage': get_battery_lvl(),
+        'Speed': get_speed(),
+        'VacuumStatus': get_vacuum_status()
+    }
     return rq.post(url, data)
+
 
 # Get Temperature from Raspberry Pi
 def get_temperature():
@@ -23,10 +33,12 @@ def get_temperature():
     file.close()
     return float(contents) / 1000
 
+
 # Get Weight from the loadcells
 def get_weight():
     weight = loadcell.get_weight(loadcell)
     return weight
+
 
 # Get speed from the servomotors
 def get_speed():
@@ -55,37 +67,20 @@ def get_speed():
 
     return meterperseconde
 
-# Get operation mode
-def get_mode():
-    mode = Application.currentMode
-
-    return mode
 
 # Get battery capacity
-def get_batterylvl():
+def get_battery_lvl():
     # Get battery level using the psutil library
     batterylvl = psutil.sensors_battery()
     batteryPersentage = str(batterylvl.percent)
 
     return batteryPersentage
 
+
 # Get the state of the vacuum cleaner
-def get_vacuumstatus():
+def get_vacuum_status():
     status = False
     if opencv.turn_to_object:
         status = True
 
     return status
-
-# Data that will be send with the POST request
-data = {
-    'Mode': get_mode(),
-    'Temperature': get_temperature(),
-    'Weight': get_weight(),
-    'BatteryPercentage': get_batterylvl(),
-    'Speed': get_speed(),
-    'VacuumStatus': get_vacuumstatus()
-}
-
-response = rq.post(url, data)
-print(f'Upload response({response.status_code}): {response.reason}')

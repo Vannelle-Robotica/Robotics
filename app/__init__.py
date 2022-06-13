@@ -9,20 +9,7 @@ from hardware.magnet import Magnet
 from hardware.motors import Motors
 from utils.ble import BLEClient
 from utils.operatingmode import OperatingMode
-from utils.telemetry import get_temperature
-
-
-class Modes(enum.Enum):
-    autonomous = 0
-    controlled = 1
-    lineDance = 2
-    dancing = 3
-
-    def next(self):
-        v = self.value
-        if v == 3:
-            return Modes(0)
-        return Modes(v + 1)
+from utils.telemetry import upload
 
 
 class Application:
@@ -40,7 +27,7 @@ class Application:
         # Initialize Motors
         self.motors = Motors()
 
-        # initilize magnet
+        # initialize magnet
         self.magnet = Magnet()
 
         # Attempt to connect to controller
@@ -65,6 +52,7 @@ class Application:
         print(f'dir: {direction} button: {button} speed: {speed}')
         self.motors.move(direction, int(speed))
         self.motors.speed(int(speed))
+
         if button == 1:
             self.magnet.toggle_magnet()
         elif button == 2:
@@ -72,27 +60,31 @@ class Application:
         elif button == 3:
             self.arduino.toggle_wheels()
         elif button == 4:
+            # TODO: Impl
             print('4')
         elif button == 5:
+            # TODO: Impl
             print('5')
         elif button == 6:
             self.currentMode = OperatingMode.next(self.currentMode)
 
     def update(self):
-        if self.currentMode.autonomous:
+        if self.currentMode == OperatingMode.autonomous:
             pass
-        elif self.currentMode.controlled:
+        elif self.currentMode == OperatingMode.controlled:
             pass
-        elif self.currentMode.lineDance:
+        elif self.currentMode == OperatingMode.lineDance:
             pass
-        elif self.currentMode.dancing:
+        elif self.currentMode == OperatingMode.dancing:
             pass
 
         weight = self.loadCells.get_combined_weight()
 
         print(f'Weight: {weight}')
         self.ble.write(str(weight))
-        print(f'Temperature: {get_temperature()}')
+
+        # Post telemetry data to website
+        upload(self.currentMode)
         time.sleep(.5)
 
     def is_connected(self):
