@@ -79,15 +79,14 @@ class Application:
             self.currentMode = OperatingMode.next(self.currentMode)
 
     def update(self):
-        match self.currentMode:  # TODO: Add functionality to the different modes in this match case
-            case OperatingMode.autonomous:
-                pass
-            case OperatingMode.controlled:
-                pass
-            case OperatingMode.lineDance:
-                pass
-            case OperatingMode.dancing:
-                pass
+        if self.currentMode.autonomous:
+            pass
+        elif self.currentMode.controlled:
+            pass
+        elif self.currentMode.lineDance:
+            pass
+        elif self.currentMode.dancing:
+            pass
 
         weight = self.loadCells.get_combined_weight()
 
