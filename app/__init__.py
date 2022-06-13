@@ -2,7 +2,9 @@ import re
 import time
 
 import RPi.GPIO as GPIO
+import cv2
 
+from app.utils.opencv import Camera
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
@@ -26,6 +28,10 @@ class Application:
 
         # Initialize Motors
         self.motors = Motors()
+
+        # Initialize openCV
+        Capture = cv2.VideoCapture
+        self.camera = Camera(Capture)
 
         # initialize magnet
         self.magnet = Magnet()
