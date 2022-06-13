@@ -3,7 +3,7 @@ import math
 import psutil
 import requests as rq
 
-from app.hardware import loadcell
+from app.hardware.loadcell import LoadCells
 from app.hardware.motors import Motors
 from app.utils import opencv
 
@@ -36,7 +36,7 @@ def get_temperature():
 
 # Get Weight from the loadcells
 def get_weight():
-    weight = loadcell.get_weight(loadcell)
+    weight = LoadCells.get_combined_weight()
     return weight
 
 
