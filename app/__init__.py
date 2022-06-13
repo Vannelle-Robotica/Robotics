@@ -65,20 +65,18 @@ class Application:
         print(f'dir: {direction} button: {button} speed: {speed}')
         self.motors.move(direction, int(speed))
         self.motors.speed(int(speed))
-        match button:
-            case 1:
-                self.magnet.toggle_magnet()
-            case 2:
-                self.arduino.toggle_arm()
-            case 3:
-                self.arduino.toggle_wheels()
-            case 4:
-                pass
-            case 5:
-                pass
-            case 6:
-                self.currentMode = OperatingMode.next(self.currentMode)
-
+        if button == 1:
+            self.magnet.toggle_magnet()
+        elif button == 2:
+            self.arduino.toggle_arm()
+        elif button == 3:
+            self.arduino.toggle_wheels()
+        elif button == 4:
+            print('4')
+        elif button == 5:
+            print('5')
+        elif button == 6:
+            self.currentMode = OperatingMode.next(self.currentMode)
 
     def update(self):
         match self.currentMode:  # TODO: Add functionality to the different modes in this match case
