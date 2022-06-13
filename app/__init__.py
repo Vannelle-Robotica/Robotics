@@ -84,7 +84,7 @@ class Application:
         self.ble.write(str(weight))
 
         # Post telemetry data to website
-        upload(self.currentMode)
+        upload(self.currentMode, weight)
         time.sleep(.5)
 
     def is_connected(self):

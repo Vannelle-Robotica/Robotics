@@ -11,14 +11,14 @@ url = 'http://localhost:5217/upload'
 
 
 # Upload Data
-def upload(mode):
+def upload(mode, weight):
     data = {
         'Mode': mode,
         'Temperature': get_temperature(),
-        'Weight': get_weight(),
+        'Weight': weight,
         'BatteryPercentage': get_battery_lvl(),
-        'Speed': get_speed(),
-        'VacuumStatus': get_vacuum_status()
+        # 'Speed': get_speed(),
+        # 'VacuumStatus': get_vacuum_status()
     }
     return rq.post(url, data)
 
