@@ -12,7 +12,7 @@ def upload(mode, weight):
         'Mode': mode,
         'Temperature': get_temperature(),
         'Weight': weight,
-        'BatteryPercentage': get_battery_lvl(),
+        # 'BatteryPercentage': get_battery_lvl(),
         # 'Speed': get_speed(),
         # 'VacuumStatus': get_vacuum_status()
     }
@@ -28,7 +28,6 @@ def get_temperature():
     # Close file and return
     file.close()
     return float(contents) / 1000
-
 
 
 # Get speed from the servomotors

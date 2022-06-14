@@ -15,6 +15,9 @@ class Delegate(btle.DefaultDelegate):
             self.on_receive(decoded)
         except UnicodeError:
             print(f'UnicodeError: {data}')
+        except Exception as e:
+            print(e)
+            pass
 
 
 class BLEClient:
@@ -29,6 +32,7 @@ class BLEClient:
         # Connect and set delegate
         self.per = btle.Peripheral(addr)
         self.per.setDelegate(Delegate(on_receive))
+        self.connected = True
 
         # Initialize service and characteristic
         self.svc = self.per.getServiceByUUID('6E400001-B5A3-F393-E0A9-E50E24DCCA9E')
@@ -53,19 +57,21 @@ class BLEClient:
         self.per.writeCharacteristic(self.ch.valHandle + 1, b"\x01\00")
 
         # BLE loop
-        while self.is_connected():
-            # Wait for notification from ESP32
-            self.per.waitForNotifications(1.0)
+        while True:
+            try:
+                # Wait for notification from ESP32
+                self.per.waitForNotifications(0.1)
 
-            if self.rqs_to_send:
-                self.rqs_to_send = False
+                if self.rqs_to_send:
+                    self.rqs_to_send = False
 
-                try:
                     # Write pending data to target device
                     self.ch.write(self.bytes_to_send, True)
-                except btle.BTLEException:
-                    print('btle.BTLEException')
-                    break
+            except btle.BTLEException as e:
+                print('Bluetooth exception')
+                print(e)
+                self.connected = False
+                break
 
         # Print exit
         print('WorkerBLE end')
@@ -78,5 +84,5 @@ class BLEClient:
     def is_connected(self):
         """Checks if the client is still connected to the server"""
         # TODO: Impl
-        return True
+        return self.connected
         # return self.per.getState() == 'conn'

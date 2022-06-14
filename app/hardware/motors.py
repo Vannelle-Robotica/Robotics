@@ -33,8 +33,8 @@ class Motors:
         self.p2.start(25)
 
     def forward(self):
-        GPIO.output(in1, GPIO.HIGH)
-        GPIO.output(in2, GPIO.LOW)
+        GPIO.output(in1, GPIO.LOW)
+        GPIO.output(in2, GPIO.HIGH)  # was eerst omgedraaid
         GPIO.output(in3, GPIO.HIGH)
         GPIO.output(in4, GPIO.LOW)
 
@@ -46,20 +46,20 @@ class Motors:
 
     def move(self, direction, speed):
         if direction == 's':
-            print("stop")
+            # print("stop")
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.LOW)
 
         elif direction == 'f':
-            print("forward")
-            self.Forward()
+            # print("forward")
+            self.forward()
             self.temp1 = 1
 
         elif direction == 'b':
-            print("backward")
-            self.Backward()
+            # print("backward")
+            self.backward()
             self.temp1 = 0
 
         elif direction == 'rl':

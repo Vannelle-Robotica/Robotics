@@ -2,6 +2,7 @@ import re
 import time
 
 import RPi.GPIO as GPIO
+from bluepy import btle
 
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
@@ -22,24 +23,27 @@ class Application:
 
         # Initialize Arduino connection
         print('Initializing Arduino connection')
-        self.arduino = Arduino('0x8')
+        self.arduino = Arduino(0x8)
+
+        # Initialize Magnet
+        self.magnet = Magnet()
+
+        try:
+            # Attempt to connect to controller
+            print('Waiting for controller')
+            self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
+        except btle.BTLEDisconnectError:
+            print('Failed to connect')
+            exit(1)
+            pass
 
         # Initialize Motors
         self.motors = Motors()
-
-        # initialize magnet
-        self.magnet = Magnet()
-
-        # Attempt to connect to controller
-        print('Waiting for controller')
-
-        while True:
-            try:
-                self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
-                break
-            except:
-                pass
         print('Connected')
+
+    def __del__(self):
+        if 'motors' in locals():
+            self.motors.move('s', 0)
 
     def on_receive(self, data):
         match = re.search(r'^d (\w{1,2}) b ([0-6]) s (\d+)$', data)
@@ -49,23 +53,25 @@ class Application:
 
         # TODO
         (direction, button, speed) = match.groups()
-        print(f'dir: {direction} button: {button} speed: {speed}')
-        self.motors.move(direction, int(speed))
-        self.motors.speed(int(speed))
+        speed = int(speed)
+        # print(f'dir: {direction} button: {button} speed: {speed}')
+        self.motors.move(direction, speed)
+        self.motors.speed(speed)
 
-        if button == 1:
+        if button == '1':
             self.magnet.toggle_magnet()
-        elif button == 2:
+        elif button == '2':
             self.arduino.toggle_arm()
-        elif button == 3:
+        elif button == '3':
             self.arduino.toggle_wheels()
-        elif button == 4:
+            print(f'button: {button}')
+        elif button == '4':
             # TODO: Impl
             print('4')
-        elif button == 5:
+        elif button == '5':
             # TODO: Impl
             print('5')
-        elif button == 6:
+        elif button == '6':
             self.currentMode = OperatingMode.next(self.currentMode)
 
     def update(self):
@@ -78,13 +84,12 @@ class Application:
         elif self.currentMode == OperatingMode.dancing:
             pass
 
-        weight = self.loadCells.get_combined_weight()
+        # weight = self.loadCells.get_combined_weight()
+        # print(f'Weight: {weight}')
+        # self.ble.write(str(weight))
 
-        print(f'Weight: {weight}')
-        self.ble.write(str(weight))
-
-        # Post telemetry data to website
-        upload(self.currentMode, weight)
+        # TODO: Post telemetry data to website
+        # upload(self.currentMode, weight)
         time.sleep(.5)
 
     def is_connected(self):
@@ -97,12 +102,16 @@ def main():
     app = Application()
 
     # Update while connected to the controller
-    while app.is_connected():
-        app.update()
+    try:
+        while app.is_connected():
+            app.update()
+    except KeyboardInterrupt:
+        pass
 
     # Cleanup on shutdown
     print('Disconnected')
     GPIO.cleanup()
+    exit(0)
 
 
 # Call entry point
