@@ -2,8 +2,9 @@ import re
 import time
 
 import RPi.GPIO as GPIO
-from bluepy import btle
+import cv2
 
+from app.utils.opencv import Camera
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
@@ -25,7 +26,14 @@ class Application:
         print('Initializing Arduino connection')
         self.arduino = Arduino(0x8)
 
-        # Initialize Magnet
+        # Initialize Motors
+        self.motors = Motors()
+
+        # Initialize OpenCV
+        Capture = cv2.VideoCapture
+        self.camera = Camera(Capture)
+
+        # initialize Magnet
         self.magnet = Magnet()
 
         try:

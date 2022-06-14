@@ -30,6 +30,7 @@ def get_temperature():
     return float(contents) / 1000
 
 
+
 # Get speed from the servomotors
 def get_speed():
     # In Inches
