@@ -2,9 +2,9 @@ import re
 import time
 
 import RPi.GPIO as GPIO
-import cv2
+# from app.utils.opencv import Camera
+from bluepy import btle
 
-from app.utils.opencv import Camera
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
@@ -26,24 +26,24 @@ class Application:
         print('Initializing Arduino connection')
         self.arduino = Arduino(0x8)
 
-        # Initialize Motors
-        self.motors = Motors()
-
         # Initialize OpenCV
-        Capture = cv2.VideoCapture
-        self.camera = Camera(Capture)
+        # self.capture = cv2.VideoCapture(0)
+        # self.camera = Camera(self.capture)
 
         # initialize Magnet
         self.magnet = Magnet()
+        self.magnet.toggle_magnet()
 
-        try:
-            # Attempt to connect to controller
-            print('Waiting for controller')
-            self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
-        except btle.BTLEDisconnectError:
-            print('Failed to connect')
-            exit(1)
-            pass
+        while True:
+            try:
+                # Attempt to connect to controller
+                print('Waiting for controller')
+                self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
+                break
+            except btle.BTLEDisconnectError:
+                print('Failed to connect')
+                time.sleep(1)
+                pass
 
         # Initialize Motors
         self.motors = Motors()
@@ -92,9 +92,9 @@ class Application:
         elif self.currentMode == OperatingMode.dancing:
             pass
 
-        # weight = self.loadCells.get_combined_weight()
-        # print(f'Weight: {weight}')
-        # self.ble.write(str(weight))
+        weight, r = self.loadCells.get_combined_weight()
+        print(f'Weight: {weight} + {r} = {weight + r}')
+        self.ble.write(str(weight))
 
         # TODO: Post telemetry data to website
         # upload(self.currentMode, weight)

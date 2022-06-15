@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 
-in1 = 5
-in2 = 6
+in1 = 6
+in2 = 5
 ena = 13
 in3 = 20
 in4 = 21
@@ -33,8 +33,8 @@ class Motors:
         self.p2.start(25)
 
     def forward(self):
-        GPIO.output(in1, GPIO.LOW)
-        GPIO.output(in2, GPIO.HIGH)  # was eerst omgedraaid
+        GPIO.output(in1, GPIO.HIGH)
+        GPIO.output(in2, GPIO.LOW)
         GPIO.output(in3, GPIO.HIGH)
         GPIO.output(in4, GPIO.LOW)
 
@@ -63,12 +63,16 @@ class Motors:
             self.temp1 = 0
 
         elif direction == 'rl':
+            self.p.ChangeDutyCycle(speed * 0.5)
+            self.p2.ChangeDutyCycle(speed * 0.5)
             GPIO.output(in1, GPIO.HIGH)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.HIGH)
 
         elif direction == 'rr':
+            self.p.ChangeDutyCycle(speed * 0.5)
+            self.p2.ChangeDutyCycle(speed * 0.5)
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.HIGH)
             GPIO.output(in3, GPIO.HIGH)
