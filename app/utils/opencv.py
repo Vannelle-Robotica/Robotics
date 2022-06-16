@@ -1,6 +1,5 @@
 import cv2 as cv
 
-from app.hardware.arduino import Arduino
 from app.hardware.motors import Motors
 
 BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
@@ -8,10 +7,12 @@ BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
 CIGARETTE = [(10, 100, 0), (28, 255, 255)]
 
 Speed = 60
-lowerWidth, higherWidth, cX, stop = 0
+
+stop = 0
+
 
 class Camera:
-    def get_object(self, mask, min_size):
+    def get_object(self, mask, min_size, motors):
         """Finds the largest object with the specified mask in the frame"""
         # Mask all blue and brown objects in image
         converted = cv.cvtColor(self, cv.COLOR_BGR2HSV)
@@ -30,7 +31,7 @@ class Camera:
             return contours[0]
         return None
 
-    def get_centroid(self, contours):
+    def get_centroid(self, frame, contours):
         # Get width of screen and take a margin of the middle
         __, width, ___ = self.shape
         width = width / 2
@@ -42,9 +43,9 @@ class Camera:
 
         return lowerWidth, higherWidth, cX
 
-    def turn_to_object(self, contours):
+    def turn_to_object(self, frame, contours):
         """this function turns to the founded cigarette and drives to it"""
-        self.get_centroid(self, contours)
+        (lowerWidth, higherWidth, cX) = self.get_centroid(frame, contours)
 
         # rechter wielen moeten harder rijden
         if cX < lowerWidth:
@@ -53,22 +54,19 @@ class Camera:
 
         # linker wielen moeten harder rijden
         if cX > higherWidth:
-            Motors.move("rr",Speed)
+            Motors.move("rr", Speed)
             Motors.speed(Speed)
 
         # beide niet dan rechtdoor rijden
         else:
-            Motors.move("f",Speed)
+            Motors.move("f", Speed)
             Motors.speed(Speed)
             cv.waitKey(5000)
             Motors.move("s", stop)
 
+    def follow_cube(self, frame, contours):
 
-
-    def follow_cube(self, contours):
-
-        self.get_centroid(self, contours)
-
+        (lowerWidth, higherWidth, cX) = self.get_centroid(frame, contours)
         # rechter wielen moeten harder rijden
         if cX < lowerWidth:
             Motors.move("rl", Speed)
@@ -77,3 +75,5 @@ class Camera:
         if cX > higherWidth:
             Motors.move("rr", Speed)
             Motors.speed(Speed)
+        else:
+            print('No turn')

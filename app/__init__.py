@@ -1,15 +1,14 @@
 import re
 import time
 
-import RPi.GPIO as GPIO
 from bluepy import btle
 
-from app.utils.opencv import Camera
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
 from hardware.motors import Motors
 from utils.ble import BLEClient
+from utils.opencv import Camera, BLUE_SQUARE
 from utils.operatingmode import OperatingMode
 from utils.telemetry import upload
 
@@ -28,7 +27,7 @@ class Application:
 
         # Initialize OpenCV
         self.capture = cv2.VideoCapture(0)
-        self.camera = Camera(self.capture)
+        self.camera = Camera()
 
         # initialize Magnet
         self.magnet = Magnet()
@@ -52,6 +51,7 @@ class Application:
     def __del__(self):
         if 'motors' in locals():
             self.motors.move('s', 0)
+        self.capture.release()
 
     def on_receive(self, data):
         match = re.search(r'^d (\w{1,2}) b ([0-6]) s (\d+)$', data)
@@ -62,7 +62,7 @@ class Application:
         # TODO
         (direction, button, speed) = match.groups()
         speed = int(speed)
-        # print(f'dir: {direction} button: {button} speed: {speed}')
+        print(f'dir: {direction} button: {button} speed: {speed}')
         self.motors.move(direction, speed)
         self.motors.speed(speed)
 
@@ -72,10 +72,8 @@ class Application:
             self.arduino.toggle_arm()
         elif button == '3':
             self.arduino.toggle_wheels(button)
-            print(f'button: {button}')
         elif button == '4':
             self.arduino.toggle_wheels(button)
-            print('4')
         elif button == '5':
             # TODO: Impl
             print('5')
@@ -84,7 +82,10 @@ class Application:
 
     def update(self):
         if self.currentMode == OperatingMode.autonomous:
-            pass
+            ret.frame = self.capture.read()
+
+            if ret is True:
+                self.camera.get_object(frame, BLUE_SQUARE, 2, self.motors)
         elif self.currentMode == OperatingMode.controlled:
             pass
         elif self.currentMode == OperatingMode.lineDance:
@@ -118,8 +119,6 @@ def main():
 
     # Cleanup on shutdown
     print('Disconnected')
-    GPIO.cleanup()
-    exit(0)
 
 
 # Call entry point

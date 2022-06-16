@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 
-in1 = 6
-in2 = 5
+in1 = 5
+in2 = 6
 ena = 13
 in3 = 20
 in4 = 21
