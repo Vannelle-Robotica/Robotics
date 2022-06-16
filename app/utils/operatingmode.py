@@ -9,6 +9,6 @@ class OperatingMode(enum.Enum):
 
     def next(self):
         value = self.value
-        if value == OperatingMode.dancing:
+        if value == 3:
             return OperatingMode.autonomous
         return OperatingMode(value + 1)

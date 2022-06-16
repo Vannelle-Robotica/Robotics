@@ -2,12 +2,9 @@ import math
 
 import psutil
 import requests as rq
-from app import Application
-from app.hardware.loadcell import LoadCell
-from app.hardware.motors import Motors
-from app.utils import opencv
 
 url = 'http://localhost:5217/upload'
+
 
 # Upload Data
 def upload(mode, weight):
@@ -15,7 +12,7 @@ def upload(mode, weight):
         'Mode': mode,
         'Temperature': get_temperature(),
         'Weight': weight,
-        'BatteryPercentage': get_battery_lvl(),
+        # 'BatteryPercentage': get_battery_lvl(),
         # 'Speed': get_speed(),
         # 'VacuumStatus': get_vacuum_status()
     }
@@ -32,10 +29,7 @@ def get_temperature():
     file.close()
     return float(contents) / 1000
 
-# Get Weight from the loadcells
-def get_weight():
-    weight = LoadCell.get_weight()
-    return weight
+
 
 # Get speed from the servomotors
 def get_speed():
@@ -62,14 +56,8 @@ def get_speed():
     milesPerHour = (currentRpm / revolutionsPerMile) * 60
     meterperseconde = milesPerHour / 2.237
 
-
     return meterperseconde
 
-# Get operation mode
-def get_mode():
-    mode = Application.currentMode
-
-    return mode
 
 # Get battery capacity
 def get_battery_lvl():

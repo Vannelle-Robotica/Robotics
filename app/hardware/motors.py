@@ -46,29 +46,33 @@ class Motors:
 
     def move(self, direction, speed):
         if direction == 's':
-            print("stop")
+            # print("stop")
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.LOW)
 
         elif direction == 'f':
-            print("forward")
-            self.Forward()
+            # print("forward")
+            self.forward()
             self.temp1 = 1
 
         elif direction == 'b':
-            print("backward")
-            self.Backward()
+            # print("backward")
+            self.backward()
             self.temp1 = 0
 
         elif direction == 'rl':
+            self.p.ChangeDutyCycle(speed * 0.5)
+            self.p2.ChangeDutyCycle(speed * 0.5)
             GPIO.output(in1, GPIO.HIGH)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.HIGH)
 
         elif direction == 'rr':
+            self.p.ChangeDutyCycle(speed * 0.5)
+            self.p2.ChangeDutyCycle(speed * 0.5)
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.HIGH)
             GPIO.output(in3, GPIO.HIGH)
