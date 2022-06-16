@@ -46,6 +46,28 @@ class Arduino:
             self.write('2477')
             self.write('3477')
 
+    def toggle_wheels_front(self):
+        """Toggles the wheels between the open and closed state"""
+        self.open = not self.open
+        if self.open:
+            self.write('0102')
+            self.write('1102')
+        else:
+            self.write('0546')
+            self.write('1546')
+
+
+    def toggle_wheels_back(self):
+        """Toggles the wheels between the open and closed state"""
+        self.open = not self.open
+        if self.open:
+            self.write('2920')
+            self.write('3920')
+        else:
+            self.write('2477')
+            self.write('3477')
+
+
     def use_vaccuum(self):
         self.on = not self.on
         if self.on:
