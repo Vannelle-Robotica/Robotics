@@ -2,9 +2,9 @@ import re
 import time
 
 import RPi.GPIO as GPIO
-# from app.utils.opencv import Camera
 from bluepy import btle
 
+from app.utils.opencv import Camera
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
@@ -27,8 +27,8 @@ class Application:
         self.arduino = Arduino(0x8)
 
         # Initialize OpenCV
-        # self.capture = cv2.VideoCapture(0)
-        # self.camera = Camera(self.capture)
+        self.capture = cv2.VideoCapture(0)
+        self.camera = Camera(self.capture)
 
         # initialize Magnet
         self.magnet = Magnet()
@@ -71,10 +71,10 @@ class Application:
         elif button == '2':
             self.arduino.toggle_arm()
         elif button == '3':
-            self.arduino.toggle_wheels()
+            self.arduino.toggle_wheels(button)
             print(f'button: {button}')
         elif button == '4':
-            # TODO: Impl
+            self.arduino.toggle_wheels(button)
             print('4')
         elif button == '5':
             # TODO: Impl
