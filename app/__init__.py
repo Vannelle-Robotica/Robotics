@@ -13,8 +13,11 @@ from utils.operatingmode import OperatingMode
 from utils.telemetry import upload
 
 
+TURN_SPEED = 60
+
+
 class Application:
-    currentMode = OperatingMode.controlled
+    currentMode = OperatingMode.autonomous
 
     def __init__(self):
         # Initialize LoadCells
@@ -28,28 +31,28 @@ class Application:
         # Initialize OpenCV
         self.camera = Camera()
 
-        # initialize Magnet
+        # Initialize Magnet
         self.magnet = Magnet()
         self.magnet.toggle_magnet()
+
+        # Initialize Motors
+        self.motors = Motors()
 
         while True:
             try:
                 # Attempt to connect to controller
                 print('Waiting for controller')
                 self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
+                print('Connected')
                 break
             except btle.BTLEDisconnectError:
                 print('Failed to connect')
                 time.sleep(1)
                 pass
 
-        # Initialize Motors
-        self.motors = Motors()
-        print('Connected')
-
     def __del__(self):
         if 'motors' in locals():
-            self.motors.move('s', 0)
+            self.motors.move('s')
 
     def on_receive(self, data):
         match = re.search(r'^d (\w{1,2}) m ([0-3]) b ([0-6]) s (\d+)$', data)
@@ -64,7 +67,6 @@ class Application:
 
         print(f'dir: {direction} mode: {mode} button: {button} speed: {speed}')
         self.motors.move(direction, speed)
-        self.motors.speed(speed)
 
         if button == '1':
             self.magnet.toggle_magnet()
@@ -80,21 +82,25 @@ class Application:
 
     def update(self):
         if self.currentMode == OperatingMode.autonomous:
-            contour, width = self.camera.get_object(BLUE_SQUARE, 2)
+            contour, width = self.camera.get_object(BLUE_SQUARE, 160)
             width = width / 2
 
             if contour is not None:
                 centroid = get_centroid(contour)
-                print(f'Centroid: {centroid}')
 
-                if centroid is not None:
-                    # TODO: Move motors
-                    if centroid > width + 50:
-                        print('Right')
-                    elif centroid < width - 50:
-                        print('Left')
-                    else:
-                        print('No turn')
+                # TODO: Move motors
+                if centroid > width + 60:
+                    #speed = max(centroid - width - 30, 65)
+
+                    self.motors.move('rr', TURN_SPEED)
+                elif centroid < width - 60:
+                    #speed = max(width - centroid - 30, 65)
+                    self.motors.move('rl', TURN_SPEED)
+                else:
+                    print('No turn')
+                    self.motors.move('s')
+            else:
+                self.motors.move('s')
         elif self.currentMode == OperatingMode.controlled:
             weight = self.loadCells.get_combined_weight()
             print(f'Weight: {weight} ')

@@ -44,7 +44,10 @@ class Motors:
         GPIO.output(in3, GPIO.LOW)
         GPIO.output(in4, GPIO.HIGH)
 
-    def move(self, direction, speed):
+    def move(self, direction, speed=0):
+        self.p.ChangeDutyCycle(speed)
+        self.p2.ChangeDutyCycle(speed)
+        
         if direction == 's':
             # print("stop")
             GPIO.output(in1, GPIO.LOW)
@@ -63,16 +66,14 @@ class Motors:
             self.temp1 = 0
 
         elif direction == 'rl':
-            self.p.ChangeDutyCycle(speed * 0.5)
-            self.p2.ChangeDutyCycle(speed * 0.5)
             GPIO.output(in1, GPIO.HIGH)
             GPIO.output(in2, GPIO.LOW)
             GPIO.output(in3, GPIO.LOW)
             GPIO.output(in4, GPIO.HIGH)
 
         elif direction == 'rr':
-            self.p.ChangeDutyCycle(speed * 0.5)
-            self.p2.ChangeDutyCycle(speed * 0.5)
+            self.p.ChangeDutyCycle(speed)
+            self.p2.ChangeDutyCycle(speed)
             GPIO.output(in1, GPIO.LOW)
             GPIO.output(in2, GPIO.HIGH)
             GPIO.output(in3, GPIO.HIGH)
@@ -93,7 +94,3 @@ class Motors:
                 self.backward()
             self.p.ChangeDutyCycle(speed * 0.25)
             self.p2.ChangeDutyCycle(speed * 0.75)
-
-    def speed(self, speed):
-        self.p.ChangeDutyCycle(speed)
-        self.p2.ChangeDutyCycle(speed)

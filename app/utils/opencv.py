@@ -5,10 +5,6 @@ BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
 # Cigarette mask
 CIGARETTE = [(10, 100, 0), (28, 255, 255)]
 
-Speed = 60
-
-stop = 0
-
 
 def get_centroid(contour):
     """Get horizontal center position of contour"""
@@ -45,5 +41,6 @@ class Camera:
         # Check if object is above minimum size
         if len(contours) > 0 and cv.contourArea(contours[0]) > min_size:
             height, width, _ = frame.shape
+            print(f'Size: {cv.contourArea(contours[0])}')
             return contours[0], width
         return None, 0
