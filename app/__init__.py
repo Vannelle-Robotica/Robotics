@@ -1,6 +1,7 @@
 import re
 import time
 
+import cv2
 from bluepy import btle
 
 from hardware.arduino import Arduino
@@ -71,9 +72,9 @@ class Application:
         elif button == '2':
             self.arduino.toggle_arm()
         elif button == '3':
-            self.arduino.toggle_wheels(button)
+            self.arduino.toggle_wheels()  # button
         elif button == '4':
-            self.arduino.toggle_wheels(button)
+            self.arduino.toggle_wheels()
         elif button == '5':
             # TODO: Impl
             print('5')
@@ -82,10 +83,10 @@ class Application:
 
     def update(self):
         if self.currentMode == OperatingMode.autonomous:
-            ret.frame = self.capture.read()
+            ret, frame = self.capture.read()
 
             if ret is True:
-                self.camera.get_object(frame, BLUE_SQUARE, 2, self.motors)
+                self.camera.get_object(frame, BLUE_SQUARE, 2, self.motors, self.arduino)
         elif self.currentMode == OperatingMode.controlled:
             pass
         elif self.currentMode == OperatingMode.lineDance:
@@ -93,9 +94,9 @@ class Application:
         elif self.currentMode == OperatingMode.dancing:
             pass
 
-        weight, r = self.loadCells.get_combined_weight()
-        print(f'Weight: {weight} + {r} = {weight + r}')
-        self.ble.write(str(weight))
+        Weight = self.loadCells.get_combined_weight()
+        print(f'Weight: {Weight} ')
+        self.ble.write(str(Weight))
 
         # TODO: Post telemetry data to website
         # upload(self.currentMode, weight)

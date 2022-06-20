@@ -36,21 +36,21 @@ class Arduino:
         else:
             self.write('40')
 
-    # def toggle_wheels(self):
-    #     """Toggles the wheels between the open and closed state"""
-    #     self.open = not self.open
-    #     if self.open:
-    #         self.write('0102')
-    #         self.write('1102')
-    #         self.write('2930')
-    #         self.write('3950')
-    #     else:
-    #         self.write('0546')
-    #         self.write('1546')
-    #         self.write('2477')
-    #         self.write('3477')
+    def toggle_wheels(self):
+        """Toggles the wheels between the open and closed state"""
+        self.open = not self.open
+        if self.open:
+            self.write('0102')
+            self.write('1102')
+            self.write('2930')
+            self.write('3950')
+        else:
+            self.write('0546')
+            self.write('1546')
+            self.write('2477')
+            self.write('3477')
 
-    def toggle_wheels(self, button):
+    def toggle_wheels2(self, button):
         """Toggles the wheels between the open and closed state"""
         # change direction based on button pressed
         # get to the closest value of wheel max and minus values
