@@ -3,7 +3,7 @@ import time
 
 import cv2
 from bluepy import btle
-
+from utils.VideoCapture import VideoCaptureThreading
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
@@ -12,7 +12,6 @@ from utils.ble import BLEClient
 from utils.opencv import Camera, BLUE_SQUARE
 from utils.operatingmode import OperatingMode
 from utils.telemetry import upload
-
 
 class Application:
     currentMode = OperatingMode.controlled
@@ -27,8 +26,11 @@ class Application:
         self.arduino = Arduino(0x8)
 
         # Initialize OpenCV
-        self.capture = cv2.VideoCapture(0)
-        self.camera = Camera()
+        cap = VideoCaptureThreading(self)
+        cap.start(self)
+
+        #self.capture = cv2.VideoCapture(0)
+        #self.camera = Camera()
 
         # initialize Magnet
         self.magnet = Magnet()
@@ -83,7 +85,8 @@ class Application:
 
     def update(self):
         if self.currentMode == OperatingMode.autonomous:
-            ret, frame = self.capture.read()
+            ret, frame = self.cap.read()
+            #ret, frame = self.capture.read()
 
             if ret is True:
                 self.camera.get_object(frame, BLUE_SQUARE, 2, self.motors, self.arduino)

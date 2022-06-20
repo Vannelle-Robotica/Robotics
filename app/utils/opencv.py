@@ -1,6 +1,7 @@
 import cv2 as cv
+from app.utils.VideoCapture import VideoCaptureThreading
 
-from app.hardware.motors import Motors
+
 
 BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
 # Cigarette mask
@@ -10,12 +11,9 @@ Speed = 60
 
 stop = 0
 
-
 class Camera:
-
     def get_object(self, frame, mask, min_size, motors, arduino):
         """Finds the largest object with the specified mask in the frame"""
-        self.motors = Motors()
         # Mask all blue and brown objects in image
         converted = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
 
@@ -35,7 +33,7 @@ class Camera:
 
     def get_centroid(self, frame, contours):
         # Get width of screen and take a margin of the middle
-        __, width, ___ = frame.shape
+        height, width, ___ = frame.shape
         width = width / 2
         lowerWidth = width - 50
         higherWidth = width + 50
