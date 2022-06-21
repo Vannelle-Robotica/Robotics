@@ -1,13 +1,14 @@
 from turtle import delay
 
 from app.hardware import motors, arduino
+from app.hardware.motors import Motors
 
 direction = "rr"
 Speed = 60
 
 
 def draai_in_het_rond(direction, Speed):
-    motors.move(direction, Speed)
+    Motors.move(direction, Speed)
 
 
 def stamp_met_je_voeten_op_de_grond():
@@ -31,34 +32,40 @@ def achterwielen_toggle():
 
 
 def raak_de_rand(direction, Speed):
-    motors.move(direction, Speed)
+    for x in range(5):
+        Motors.move(direction, Speed)
     delay(2000)
     direction = "b"
-    motors.move(direction, Speed)
+    for x in range(5):
+        Motors.move(direction, Speed)
 
 
 def refrein(direction, Speed):
     # het refrein duurt 12-13 seconde lang
-    draai_in_het_rond(direction, Speed)  # ... sec
-    delay(1000)
-    stamp_met_je_voeten_op_de_grond()  # ... sec
-    delay(1000)
-    zwaai_je_armen_in_de_lucht()  # ... sec
-    delay(1000)
-    ga_zitten_met_een_zucht()  # ... sec
-    delay(1000)
-    draai_in_het_rond(direction, Speed)  # ... sec
+    for x in range(5):
+        draai_in_het_rond(direction, Speed)  # ... sec
+    for x in range(3):
+        stamp_met_je_voeten_op_de_grond()  # ... sec
+    for x in range(2):
+        zwaai_je_armen_in_de_lucht()  # ... sec
+    for x in range(1):
+        ga_zitten_met_een_zucht()  # ... sec
+    for x in range(5):
+        draai_in_het_rond(direction, Speed)  # ... sec
 
 
 def opvulling(direction, Speed):
     # komende opvulling
     achterwielen_toggle()
-    delay(1000)
+    delay(2000)
+    achterwielen_toggle()
+    voorwielen_toggle()
+    delay(2000)
     voorwielen_toggle()
     achterwielen_toggle()
-    delay(1000)
-    voorwielen_toggle()
+    delay(2000)
     achterwielen_toggle()
+    delay(2000)
 
     # de rand aanraken
     raak_de_rand(direction, Speed)

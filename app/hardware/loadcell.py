@@ -16,7 +16,7 @@ class LoadCells:
 
     def get_combined_weight(self):
         """Gets the combined weight of the left and right load cells"""
-        return self.leftCell.get_weight() + self.rightCell.get_weight()
+        return (self.leftCell.get_weight() + self.rightCell.get_weight()) * (2/3)
 
 
 class LoadCell:

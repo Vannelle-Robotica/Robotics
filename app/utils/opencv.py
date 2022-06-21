@@ -1,6 +1,6 @@
 import cv2 as cv
 
-from app.hardware.motors import Motors
+from hardware.motors import Motors
 
 BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
 # Cigarette mask
