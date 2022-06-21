@@ -1,6 +1,5 @@
 import enum
 
-
 class OperatingMode(enum.Enum):
     autonomous = 0
     controlled = 1
