@@ -11,8 +11,8 @@ class LoadCells:
         GPIO.setmode(GPIO.BCM)
 
         # Initialize LoadCells
-        self.leftCell = LoadCell(-2209.39, 24, 23)
-        self.rightCell = LoadCell(-2189.69, 27, 22)
+        self.leftCell = LoadCell(-2209, 24, 23)
+        self.rightCell = LoadCell(2195, 27, 22)
 
     def get_combined_weight(self):
         """Gets the combined weight of the left and right load cells"""

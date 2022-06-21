@@ -12,12 +12,11 @@ from utils.opencv import *
 from utils.operatingmode import OperatingMode
 from utils.telemetry import upload
 
-
 TURN_SPEED = 60
 
 
 class Application:
-    currentMode = OperatingMode.autonomous
+    currentMode = OperatingMode.controlled
 
     def __init__(self):
         # Initialize LoadCells
@@ -62,12 +61,22 @@ class Application:
 
         # Parse received data
         (direction, mode, button, speed) = match.groups()
-        self.currentMode = OperatingMode(int(mode))
+        mode = OperatingMode(int(mode))
         speed = int(speed)
+
+        # Update operating mode
+        if mode is not self.currentMode:
+            self.currentMode = mode
+            self.motors.move('s')
+
+        # Check if robot is being controlled
+        if mode is not OperatingMode.controlled:
+            return
 
         print(f'dir: {direction} mode: {mode} button: {button} speed: {speed}')
         self.motors.move(direction, speed)
 
+        # Handle controller button press
         if button == '1':
             self.magnet.toggle_magnet()
         elif button == '2':
@@ -77,12 +86,12 @@ class Application:
         elif button == '4':
             self.arduino.toggle_wheels()
         elif button == '5':
-            # TODO: Impl
-            print('5')
+            self.arduino.use_vacuum()
 
     def update(self):
         if self.currentMode == OperatingMode.autonomous:
-            contour, width = self.camera.get_object(BLUE_SQUARE, 160)
+            contour, width, area = self.camera.get_object(CIGARETTE, 80, 800)
+            self.ble.write(str(area))
             width = width / 2
 
             if contour is not None:
@@ -90,16 +99,18 @@ class Application:
 
                 # TODO: Move motors
                 if centroid > width + 60:
-                    #speed = max(centroid - width - 30, 65)
+                    # speed = max(centroid - width - 30, 65)
 
                     self.motors.move('rr', TURN_SPEED)
                 elif centroid < width - 60:
-                    #speed = max(width - centroid - 30, 65)
+                    # speed = max(width - centroid - 30, 65)
+
                     self.motors.move('rl', TURN_SPEED)
                 else:
-                    print('No turn')
-                    self.motors.move('s')
+                    # Move forward
+                    self.motors.move('f', 60)
             else:
+                time.sleep(0.5)
                 self.motors.move('s')
         elif self.currentMode == OperatingMode.controlled:
             weight = self.loadCells.get_combined_weight()
