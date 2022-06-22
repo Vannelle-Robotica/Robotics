@@ -50,6 +50,20 @@ class Arduino:
             self.write('2477')
             self.write('3477')
 
+    def open_wheels_slightly(self):
+        """Toggles the wheels between the slightly open and closed state"""
+        self.open = not self.open
+        if self.open:
+            self.write('0102')
+            self.write('1102')
+            self.write('2930')
+            self.write('3950')
+        else:
+            self.write('0202')
+            self.write('1202')
+            self.write('2830')
+            self.write('3850')
+
     def toggle_wheels2(self, button):
         """Toggles the wheels between the open and closed state"""
         # change direction based on button pressed

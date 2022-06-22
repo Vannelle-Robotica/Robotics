@@ -7,6 +7,7 @@ from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
 from hardware.motors import Motors
+from utils.Dans import Dans
 from utils.ble import BLEClient
 from utils.opencv import *
 from utils.operatingmode import OperatingMode
@@ -36,6 +37,9 @@ class Application:
 
         # Initialize Motors
         self.motors = Motors()
+
+        # Initialize Dans
+        self.dans = Dans()
 
         while True:
             try:
@@ -84,7 +88,7 @@ class Application:
         elif button == '3':
             self.arduino.toggle_wheels()
         elif button == '4':
-            self.arduino.toggle_wheels()
+            self.arduino.open_wheels_slightly()
         elif button == '5':
             self.arduino.use_vacuum()
 
@@ -119,7 +123,7 @@ class Application:
         elif self.currentMode == OperatingMode.lineDance:
             pass
         elif self.currentMode == OperatingMode.dancing:
-            pass
+            self.dans.dans_script()
 
         # TODO: Post telemetry data to website
         # upload(self.currentMode, weight)
