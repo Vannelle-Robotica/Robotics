@@ -90,8 +90,7 @@ class Application:
 
     def update(self):
         if self.currentMode == OperatingMode.autonomous:
-            contour, width, area = self.camera.get_object(CIGARETTE, 80, 800)
-            self.ble.write(str(area))
+            contour, width, area = self.camera.get_object(CIGARETTE, 80, 400)
             width = width / 2
 
             if contour is not None:
