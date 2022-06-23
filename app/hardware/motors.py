@@ -20,14 +20,24 @@ class Motors:
         GPIO.setup(ena, GPIO.OUT)
         GPIO.output(in1, GPIO.LOW)
         GPIO.output(in2, GPIO.LOW)
-        self.p = GPIO.PWM(ena, 1000)
+
+        try:
+            self.p = GPIO.PWM(ena, 1000)
+        except RuntimeError:
+            print('Failed to setup PWM')
+            return
 
         GPIO.setup(in3, GPIO.OUT)
         GPIO.setup(in4, GPIO.OUT)
         GPIO.setup(enb, GPIO.OUT)
         GPIO.output(in1, GPIO.LOW)
         GPIO.output(in2, GPIO.LOW)
-        self.p2 = GPIO.PWM(enb, 1000)
+
+        try:
+            self.p2 = GPIO.PWM(enb, 1000)
+        except RuntimeError:
+            print('Failed to setup PWM')
+            return
 
         self.p.start(25)
         self.p2.start(25)
@@ -47,7 +57,7 @@ class Motors:
     def move(self, direction, speed=0):
         self.p.ChangeDutyCycle(speed)
         self.p2.ChangeDutyCycle(speed)
-        
+
         if direction == 's':
             # print("stop")
             GPIO.output(in1, GPIO.LOW)

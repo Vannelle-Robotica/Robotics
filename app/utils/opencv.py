@@ -3,7 +3,7 @@ import cv2 as cv
 # Blue square
 BLUE_SQUARE = [(85, 140, 0), (140, 255, 255)]
 # Cigarette mask
-CIGARETTE = [(10, 100, 0), (28, 255, 255)]
+CIGARETTE = [(10, 100, 20), (25, 255, 255)]
 
 
 def get_centroid(contour):
@@ -17,6 +17,15 @@ class Camera:
 
     def __init__(self):
         self.capture = cv.VideoCapture(0)
+
+        ret, frame = self.capture.read()
+        if not ret:
+            self.writer = None
+            return
+
+        height, width, _ = frame.shape
+        self.writer = cv.VideoWriter('/home/robotica/Documents/temp.avi', cv.VideoWriter_fourcc(*'DIVX'), 30,
+                                     (width, height))
 
     def __del__(self):
         self.capture.release()
@@ -50,6 +59,10 @@ class Camera:
 
                 # Return contour if it matches our bounds
                 if area < max_size:
+                    if self.writer is not None:
+                        cv.drawContours(frame, contours, i, (255, 255, 255))
+                        self.writer.write(frame)
+
                     _, width, _ = frame.shape
                     return contours[0], width, area
         return None, 0, 0

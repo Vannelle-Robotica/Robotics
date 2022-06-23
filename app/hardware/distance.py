@@ -1,5 +1,6 @@
-import RPi.GPIO as GPIO
 import time
+
+import RPi.GPIO as GPIO
 
 # GPIO Mode (BOARD / BCM). | GPIO.BCM lets you refer to only the usable gpio pins and not ground or vcc
 GPIO.setmode(GPIO.BCM)

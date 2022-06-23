@@ -1,5 +1,4 @@
 from smbus import SMBus
-import math
 
 # Hiervoor moeten meer dingen worden geinstalleerd op de pi staat in de aantekeningen op discord
 # nodig: sudo apt-get install i2c-tools python-smbus

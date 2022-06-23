@@ -1,8 +1,6 @@
 import re
 import time
 
-from bluepy import btle
-
 from hardware.arduino import Arduino
 from hardware.loadcell import LoadCells
 from hardware.magnet import Magnet
@@ -39,7 +37,7 @@ class Application:
         self.motors = Motors()
 
         # Initialize Dans
-        self.dans = Dans()
+        self.dans = Dans(self.arduino, self.motors)
 
         while True:
             try:
@@ -48,7 +46,7 @@ class Application:
                 self.ble = BLEClient('78:E3:6D:10:C2:2E', self.on_receive)
                 print('Connected')
                 break
-            except btle.BTLEDisconnectError:
+            except:
                 print('Failed to connect')
                 time.sleep(1)
                 pass
@@ -116,9 +114,9 @@ class Application:
                 time.sleep(0.5)
                 self.motors.move('s')
         elif self.currentMode == OperatingMode.controlled:
-            weight = self.loadCells.get_combined_weight()
-            print(f'Weight: {weight} ')
-            self.ble.write(str(weight))
+            # weight = self.loadCells.get_combined_weight()
+            # print(f'Weight: {weight} ')
+            # self.ble.write(str(weight))
             pass
         elif self.currentMode == OperatingMode.lineDance:
             pass
@@ -143,11 +141,11 @@ def main():
         try:
             while app.is_connected():
                 app.update()
-        except btle.BTLEDisconnectError:
-            print('Disconnected')
-            pass
         except KeyboardInterrupt:
             break
+        except:
+            print('Disconnected')
+            pass
 
 
 # Call entry point
